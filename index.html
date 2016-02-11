@@ -26,12 +26,14 @@
             canvas.addEventListener("mousedown", doMouseDown, false);
             var ctx = canvas.getContext("2d");
 
-            var cellsNumber = 0;
-            while (cellsNumber < 14 || cellsNumber % 2 === 1)
-                cellsNumber = Math.abs(prompt("Enter number of cells: "));
             var size = window.innerHeight > window.innerWidth ? window.innerWidth : window.innerHeight;
             var step = size / cellsNumber;
             canvas.width = canvas.height = size;
+
+            var cellsNumber = 0;
+            while (cellsNumber < 14 || cellsNumber % 2 === 1)
+                cellsNumber = Math.abs(prompt("Enter number of cells: "));
+            var step = size / cellsNumber;
 
             var borderWidth = 4;
             var wallWidth = 3;
