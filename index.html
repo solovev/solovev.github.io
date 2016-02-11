@@ -26,7 +26,9 @@
             canvas.addEventListener("mousedown", doMouseDown, false);
             var ctx = canvas.getContext("2d");
 
-            var cellsNumber = 14;
+            var cellsNumber = 0;
+            while (cellsNumber < 14 || cellsNumber % 2 === 1)
+                cellsNumber = Math.abs(prompt("Enter number of cells: "));
             var size = window.innerHeight > window.innerWidth ? window.innerWidth : window.innerHeight;
             var step = size / cellsNumber;
             canvas.width = canvas.height = size;
@@ -55,10 +57,10 @@
             var walls = [];
             for (var i = 0; i < mainD.length; i++) {
                 for (var j = 0; j < sideD.length; j++) {
-                    if ((i === 6 && j >= 7 && j <= 20)
-                    || (j === 6 && i >= 7 && i <= 20)
-                    || (j === 21 && i >= 7 && i <= 20)
-                    || (i === 21 && j >= 7 && j <= 20))
+                    if ((i === cellsNumber / 2 - 1 && j >= cellsNumber / 2 && j <= cellsNumber + cellsNumber / 2 - 1)
+                    || (j === cellsNumber / 2 - 1 && i >= cellsNumber / 2 && i <= cellsNumber + cellsNumber / 2 - 1)
+                    || (j === cellsNumber + cellsNumber / 2 && i >= 7 && i <= cellsNumber + cellsNumber / 2 - 1)
+                    || (i === cellsNumber + cellsNumber / 2 && j >= 7 && j <= cellsNumber + cellsNumber / 2 - 1))
                         walls.push({m: i, s: j});
                 }
             }
@@ -196,7 +198,7 @@
             }
 
             function canMove(m, s) {
-                if (m <= 6 || s <= 6 || m > 20 || s > 20)
+                if (m <= cellsNumber / 2 - 1|| s <= cellsNumber / 2 - 1 || m > cellsNumber + cellsNumber / 2 - 1 || s > cellsNumber + cellsNumber / 2 - 1)
                     return false;
                 if (getWall(m, s) != null)
                     return false;
