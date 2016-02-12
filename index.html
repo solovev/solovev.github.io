@@ -22,6 +22,7 @@
     <body>
         <canvas id="c"></canvas>
         <script>
+            var preeee = 0;
             var canvas = document.getElementById("c");
             canvas.addEventListener("mousedown", doMouseDown, false);
             var ctx = canvas.getContext("2d");
@@ -30,10 +31,11 @@
             var step = size / cellsNumber;
             canvas.width = canvas.height = size;
 
-            var cellsNumber = 0;
-            while (cellsNumber < 14 || cellsNumber % 2 === 1)
-                cellsNumber = Math.abs(prompt("Enter number of cells: "));
+            var cellsNumber = 14;
             var step = size / cellsNumber;
+
+            var roundStep = Math.round(step);
+            var roundSize = Math.round(size);
 
             var borderWidth = 4;
             var wallWidth = 3;
@@ -74,42 +76,29 @@
             ctx.lineWidth = borderWidth;
             ctx.stroke();
 
-            var playerMove = 0;
+            var playerMove = true;
             var points = [0, 0];
             var imgData = ctx.getImageData(0, 0, cellsNumber / 2 * step - step * 2, step * 2);
 
             ctx.font = step / 1.5 + 'px Verdana';
             function updateStats() {
+                var playerStats = "Player: " + points[0];
+                var botStats = "Bot: " + points[1];
+
                 ctx.lineWidth = 1;
                 ctx.putImageData(imgData, 0, 0);
+
                 ctx.fillStyle = '#78C0A8';
-                ctx.fillText("Blue: " + points[0], 5, step - step / 3);
-                ctx.strokeStyle = '#121212';
-                ctx.strokeText("Blue: " + points[0], 5, step - step / 3);
-                ctx.fill();
-                ctx.stroke();
+                ctx.fillText(playerStats, 5, step - step / 3);
 
                 ctx.fillStyle = '#F07818';
-                ctx.fillText("Orange: " + points[1], 5, step / 2 + step);
-                ctx.strokeText("Orange: " + points[1], 5, step / 2 + step);
-                ctx.fill();
-                ctx.stroke();
-
-                ctx.lineWidth = 2;
-                if (playerMove === 0) {
-                    var lineY = step - step / 3 + 5;
-                    ctx.moveTo(5, lineY);
-                    ctx.lineTo(ctx.measureText("Blue: " + points[0]).width, lineY);
-                } else {
-                    var lineY = step / 2 + step + 5;
-                    ctx.moveTo(5, lineY);
-                    ctx.lineTo(ctx.measureText("Orange: " + points[1]).width, lineY);
-                }
-                ctx.stroke();
+                ctx.fillText(botStats, 5, step / 2 + step);
             }
             updateStats();
 
             function doMouseDown(event) {
+                if (!playerMove)
+                    return;
                 var x = event.pageX - canvas.offsetLeft;
                 var y = event.pageY - canvas.offsetTop;
 
@@ -119,29 +108,125 @@
                 if (!canMove(m, s))
                     return;
 
-                console.log(m + " " + s);
                 walls.push({m: m, s: s});
 
-                if (playerMove === 0)
+                if (playerMove)
                     ctx.fillStyle = '#78C0A8';
-                else
-                    ctx.fillStyle = '#F07818';
+                //else
+                //    ctx.fillStyle = '#F07818';
                 var pts = makeMove(m, s);
-                points[playerMove] += pts;
+                points[0] += pts;
 
                 ctx.beginPath();
                 drawWall(m, s);
                 ctx.lineWidth = wallWidth;
                 ctx.strokeStyle = '#000000';
                 ctx.stroke();
-
+                // console.log("Player move: ", m, s);
                 if (pts === 0) {
-                if (playerMove === 0)
-                    playerMove = 1;
-                else
-                    playerMove = 0;
+                    playerMove = false;
+                    botMove();
+                    playerMove = true;
                 }
                 updateStats();
+            }
+
+            function botMove() {
+                var e = function(wm, ws) { return getWall(wm, ws) != null; }
+                var checkCoords = function(x, y) {
+                    return (x % (roundStep) !== 0 || y % (roundStep) !== 0) && (x % roundStep === 0 || y % roundStep === 0) && !(x + y < roundSize / 2 || x - y > roundSize / 2 || y - x > roundSize / 2 || (x > roundSize / 2 && y > roundSize  / 2 && x + y > roundSize + roundSize / 2));
+                }
+
+                var coords = [];
+                for (var x = 0; x < roundSize; x += roundStep / 2) {
+                    for (var y = 0; y < roundSize; y += roundStep / 2) {
+                        coords.push({x: x, y: y});
+                    }
+                }
+                shuffle(coords);
+
+                var pts = 0;
+                var min = 10;
+                var resultM = false;
+                var resultS = false;
+                for (var i = 0; i < coords.length; i++) {
+                    if (pts > 0)
+                        break;
+
+                    var x = coords[i].x;
+                    var y = coords[i].y;
+
+                    if (!checkCoords(x, y))
+                        continue;
+
+                    var m = findNearestLineIndex(mainD, x, y);
+                    var s = findNearestLineIndex(sideD, x, y);
+
+                    if (e(m,s))
+                        continue;
+
+                    ctx.fillStyle = '#F07818';
+                    pts = makeMove(m,s);
+
+                    if (pts === 0) {
+                        var c = 0;
+                        var horizontal = s % 2 !== m % 2;
+                        if (horizontal) {
+                            if (e(m    , s - 1)) c++;
+                            if (e(m + 1, s - 1)) c++;
+                            if (e(m + 1, s    )) c++;
+                            if (e(m - 1, s    )) c++;
+                            if (e(m - 1, s + 1)) c++;
+                            if (e(m    , s + 1)) c++;
+                        } else {
+                            if (e(m - 1, s    )) c++;
+                            if (e(m - 1, s - 1)) c++;
+                            if (e(m    , s - 1)) c++;
+                            if (e(m    , s + 1)) c++;
+                            if (e(m + 1, s + 1)) c++;
+                            if (e(m + 1, s    )) c++;
+                        }
+                        if (c < min) {
+                            min = c;
+                            resultM = m;
+                            resultS = s;
+                        }
+                    } else {
+                        points[1] += pts;
+                        resultM = m;
+                        resultS = s;
+                    }
+                }
+                if (resultM !== false) {
+                    // console.log("Bot move: ", resultM, resultS, min);
+                    walls.push({m: resultM, s: resultS});
+                    ctx.beginPath();
+                    if (preeee !== 0) {
+                        var preM = preeee.m;
+                        var preS = preeee.s;
+                        var preHor = preS % 2 !== preM % 2;
+                        var preP = getIntersectionPoint(mainD[preM], sideD[preS]);
+                        ctx.strokeStyle = '#000000';
+                        if (preHor) {
+                            ctx.moveTo(preP.x - step / 2, preP.y);
+                            ctx.lineTo(preP.x + step / 2, preP.y);
+                        } else {
+                            ctx.moveTo(preP.x, preP.y - step / 2);
+                            ctx.lineTo(preP.x, preP.y + step / 2);
+                        }
+                    }
+                    preeee = {m: resultM, s: resultS};
+                    ctx.stroke();
+                    ctx.beginPath();
+                    drawWall(resultM, resultS);
+                    ctx.lineWidth = wallWidth;
+                    ctx.strokeStyle = '#ff0000';
+                    ctx.stroke();
+
+                    if (pts > 0) {
+                        botMove();
+                    }
+                }
             }
 
             function createLine(x0, y0, x1, y1) {
@@ -197,6 +282,7 @@
                     ctx.moveTo(p.x, p.y - step / 2);
                     ctx.lineTo(p.x, p.y + step / 2);
                 }
+
             }
 
             function canMove(m, s) {
@@ -246,6 +332,25 @@
                         return wall;
                 }
                 return null;
+            }
+
+            function shuffle(array) {
+                var counter = array.length;
+
+                // While there are elements in the array
+                while (counter > 0) {
+                    // Pick a random index
+                    var index = Math.floor(Math.random() * counter);
+
+                    // Decrease counter by 1
+                    counter--;
+
+                    // And swap the last element with it
+                    var temp = array[counter];
+                    array[counter] = array[index];
+                    array[index] = temp;
+                }
+                return array;
             }
 
         </script>
