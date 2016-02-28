@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Infinity dive</title>
+        <style>
+            * { margin: 0; }
+            body { overflow: hidden; }
+            canvas { background: #222;}
+        </style>
+    </head>
+    <body>
+        <canvas></canvas>
+        <script>
+            window.requestAnimFrame = (function() { return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback) { window.setTimeout(callback, 1000 / 60); }; })();
+
+            var scaleFactor = 1.3, playerRadius = 10;
+
+            var width = window.innerWidth;
+            var height = window.innerHeight;
+            var borderWidth = Math.round((width + height) / 2 * 0.0075);
+            var center = { x: width / 2, y: height / 2 };
+            var hypotenuse = distanceFromCenter(0, 0);
+
+            var canvas = document.getElementsByTagName('canvas')[0];
+                canvas.width = width;
+                canvas.height = height;
+            var ctx = canvas.getContext('2d');
+            ctx.strokeStyle = 'brown';
+            ctx.lineWidth = borderWidth;
+
+            var player = {
+                x: width / 2,
+                y: height / 2,
+                size: 1
+            };
+
+            var circles = [];
+            for (var i = 0; i < 13; i++) {
+                var circle = {};
+                var startFactor = getRandomAngleFactor();
+                var endFactor = startFactor + 1;
+                circle.radius = 100 + i * borderWidth;
+                circle.startAngle = startFactor * Math.PI;
+                circle.endAngle = endFactor * Math.PI;
+                circle.factor = (hypotenuse + circle.radius * (3 + i*2)) / (hypotenuse * 2);
+                circle.radius *= circle.factor / 3;
+                circle.width = borderWidth * circle.factor;
+                circles.push(circle);
+            }
+
+
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, 100, startFactor * Math.PI, endFactor * Math.PI);
+            ctx.stroke();
+
+            (function gameLoop() {
+                 window.requestAnimFrame(gameLoop);
+
+                 ctx.clearRect(0, 0, width, height);
+
+                 ctx.fillStyle = 'brown';
+                 ctx.fillRect(player.x - player.size / 2, player.y - player.size / 2, player.size, player.size);
+                 ctx.translate(center.x, center.y);
+                 ctx.rotate(Math.PI / 180);
+                 ctx.translate(-center.x, -center.y);
+                 for (var i = 0; i < circles.length; i++) {
+                     var circle = circles[i];
+                     ctx.beginPath();
+                     ctx.arc(center.x, center.y, circle.radius, circle.startAngle, circle.endAngle);
+                     ctx.lineWidth = circle.width;
+                     ctx.stroke();
+
+                 }
+
+                 //player.x = Math.cos(degree) * (player.x - center.x) - Math.sin(degree) * (player.y - center.y) + center.x;
+                 //player.y = Math.sin(degree) * (player.x - center.x) + Math.cos(degree) * (player.y - center.y) + center.y;
+
+                 //var playerFromCenter = distanceFromCenter(player.x, player.y);
+                 //var zeroFromCenter = distanceFromCenter(0, 0);
+                 //player.size = (zeroFromCenter + playerFromCenter) / zeroFromCenter * scaleFactor * playerRadius;
+
+            })();
+            function getRandomAngleFactor() { return Math.random() * (3 - 0) + 0; }
+            function distanceFromCenter(x, y) { return Math.sqrt((center.x - x) * (center.x - x) + (center.y - y) * (center.y - y)); }
+        </script>
+    </body>
+</html>

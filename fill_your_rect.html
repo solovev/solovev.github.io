@@ -1,0 +1,70 @@
+﻿<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<style>
+ 			* { margin: 0; overflow: hidden;}
+		</style>
+	</head>
+<body>
+	<center>
+	<canvas id="c"></canvas>
+	</center>
+	<script>
+		var canvas = document.getElementById('c');
+		var ctx = canvas.getContext('2d');
+			ctx.fillStyle = "black";
+			
+		var width = canvas.width = document.documentElement.clientWidth;
+		var height = canvas.height = document.documentElement.clientHeight;
+
+		var count = 500; // prompt("Enter number of object: ");
+
+		var offsetAngle = 360 / count;
+		var radian = Math.PI / 180;
+
+		var size = 30;
+
+		var attachLeft = width - size;
+		var attachBottom = height - size;
+
+
+		var timerId = setInterval(doIt, 10)
+		var rW = 0, rH = 0;
+
+		var rects = {};
+
+		function doIt() {
+			ctx.clearRect(0, 0, width, height);
+
+			for (var i = 0; i < count; i++) {
+				if (rects[i]) continue;
+
+				var angle = (offsetAngle * i) * radian;
+				var x = rW * Math.cos(angle);
+				var y = rH * Math.sin(angle);
+
+				x += width / 2;
+				y += height / 2;
+
+				if (x + size >= width ) x = attachLeft;
+				if (y + size >= height) y = attachBottom;
+				if (x <= 0) 			x = 0;
+				if (y <= 0) 			y = 0;
+
+				if (x === attachLeft || x === 0 || y === attachBottom || y === 0)
+					rects[i] = {x: x, y: y};
+
+				ctx.fillRect(x, y, size, size);
+			}
+
+			for (var i in rects)
+				ctx.fillRect(rects[i].x, rects[i].y, size, size);
+
+			rW += 1;
+			rH += 1;
+		}
+
+	</script>
+
+</body>
+</html>
