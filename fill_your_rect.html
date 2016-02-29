@@ -13,7 +13,7 @@
 		var canvas = document.getElementById('c');
 		var ctx = canvas.getContext('2d');
 			ctx.fillStyle = "black";
-			
+
 		var width = canvas.width = document.documentElement.clientWidth;
 		var height = canvas.height = document.documentElement.clientHeight;
 
@@ -37,22 +37,14 @@
 			ctx.clearRect(0, 0, width, height);
 
 			for (var i = 0; i < count; i++) {
-				if (rects[i]) continue;
 
 				var angle = (offsetAngle * i) * radian;
-				var x = rW * Math.cos(angle);
-				var y = rH * Math.sin(angle);
+				var x = Math.sin(angle) * rW * Math.cos(angle * 10);
+				var y = Math.cos(angle) * rH * Math.sin(angle);
 
-				x += width / 2;
+				x;
 				y += height / 2;
 
-				if (x + size >= width ) x = attachLeft;
-				if (y + size >= height) y = attachBottom;
-				if (x <= 0) 			x = 0;
-				if (y <= 0) 			y = 0;
-
-				if (x === attachLeft || x === 0 || y === attachBottom || y === 0)
-					rects[i] = {x: x, y: y};
 
 				ctx.fillRect(x, y, size, size);
 			}
