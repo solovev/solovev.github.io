@@ -78,11 +78,11 @@ class Main {
         this.enemies = [];
 
 
-        var lastDown = 0, lastUp = 0;
+        //var lastDown = 0, lastUp = 0;
         this.game.input.keyboard.addCallbacks(this,
             (event: KeyboardEvent) => { // onDown
-                if (lastDown != 0)
-                    return;
+                //if (lastDown != 0)
+                //    return;
 
                 ux.onDown(event.keyCode);
 
@@ -91,14 +91,14 @@ class Main {
                     this.player.fireTo(point);
 
 
-                lastDown = event.keyCode;
+                //lastDown = event.keyCode;
             },
             (event: KeyboardEvent) => { // onUp
                 ux.onUp(event.keyCode);
 
-                if (lastDown == event.keyCode)
-                    lastDown = 0;
-                lastUp = event.keyCode;
+                //if (lastDown == event.keyCode)
+                //    lastDown = 0;
+                //lastUp = event.keyCode;
             },
             (char: string) => { // onPress
             }

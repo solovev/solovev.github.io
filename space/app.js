@@ -54,20 +54,13 @@ var Main = (function () {
         var ux = new GameUX(0, 14, this.game);
         this.player = new Player(w / 2, h / 2, this.game);
         this.enemies = [];
-        var lastDown = 0, lastUp = 0;
         this.game.input.keyboard.addCallbacks(this, function (event) {
-            if (lastDown != 0)
-                return;
             ux.onDown(event.keyCode);
             var point = ux.getPoint(event.keyCode);
             if (point != null)
                 _this.player.fireTo(point);
-            lastDown = event.keyCode;
         }, function (event) {
             ux.onUp(event.keyCode);
-            if (lastDown == event.keyCode)
-                lastDown = 0;
-            lastUp = event.keyCode;
         }, function (char) {
         });
     };
@@ -200,7 +193,7 @@ var Player = (function () {
             this.nextFire = this.game.time.now + this.fireRate;
             var bullet = this.bullets.getFirstDead();
             bullet.reset(this.sprite.x - 8, this.sprite.y - 8);
-            this.game.physics.arcade.moveToXY(bullet, point.x, point.y, 600);
+            this.game.physics.arcade.moveToXY(bullet, point.x, point.y, 300);
         }
     };
     return Player;
