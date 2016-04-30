@@ -5,553 +5,124 @@
             * {
                 margin: 0;
             }
-            canvas {
-                position: absolute;
-                margin: auto;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
+            body {
+                background: #000;
+                overflow: hidden;
             }
-
         </style>
     </head>
     <body>
-        <canvas id="c"></canvas>
+        <canvas></canvas>
         <script>
-            window.requestAnimFrame = (function() {
-                return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback) {
-                    window.setTimeout(callback, 1000 / 60);
-                };
+            (function() {
+              var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+                                          window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+              window.requestAnimationFrame = requestAnimationFrame;
             })();
 
-            var assets = {};
-            var colorPalette = ['#333', '#666', '#5471c3', '#F0A830'];
-            var suffixes = {
-                "line": ['TB', 'RL'],
-                "bend": ['TR', 'TL', 'BL', 'BR'],
-                "cros": ['LTB', 'BLR', 'RTB', 'TLR']
-            };
-            var prefixes = ['line', 'bend', 'cros'];
+            var canvas = document.getElementsByTagName('canvas')[0];
+            var width = canvas.width = window.innerWidth;
+            var height = canvas.height = window.innerHeight;
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'white';
 
-            document.body.bgColor = colorPalette[0];
-            var canvas = document.getElementById("c");
-                canvas.addEventListener("mousedown", doMouseDown, false);
-            var size = canvas.width = canvas.height = window.innerHeight > window.innerWidth ? window.innerWidth : window.innerHeight;
+            var count = 5;
+            var PI_2 = 2 * Math.PI;
+            var step = PI_2 / count;
+            var centerX = width / 2;
+            var centerY = height / 2;
+            var max = centerX * centerY;
 
-            var cellsNumber = 10;
-            var cellSize = Math.round(size / cellsNumber);
-            var assetWidth = cellSize * 0.2;
+            function Particle(x, y, size, leanAngle) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.angle = 0;
 
-            createAssets();
-
-            var ctx = canvas.getContext("2d");
-            var battery;
-            var cells = [];
-            var lampsIndexes = [];
-            var path = {};
-            var time, timeAmount = 0;
-            var level = -1;
-
-            window.onload = function() {
-                for (var i = 0; i < cellsNumber; i++) {
-                    for (var j = 0; j < cellsNumber; j++) {
-                        var cell = {};
-                        cell.index = i * cellsNumber + j;
-                        cell.x = j * cellSize;
-                        cell.y = i * cellSize;
-                        cell.state = '';
-                        cell.name = '';
-                        cell.dirs = [];
-                        cell.clickable = false;
-                        cells.push(cell);
-                    }
-                }
-
-                createMap();
-                setupConnections(battery, -1);
-                // (function gameLoop() {
-                //     window.requestAnimFrame(gameLoop);
-                // })();
+                this.lean = [cos(leanAngle), sin(leanAngle)];
             }
 
-            function setCellAsset(cell, asset) {
-                cell.dirs = [];
-                if (asset.startsWith("cros") || asset.startsWith("bend") || asset.startsWith("line")) {
-                    cell.name = asset.substring(0, 4);
-                    var leftOver = asset.substring(4, asset.length);
-                    var stateLen = leftOver.startsWith("Off") ? 3 : 2;
-
-                    cell.state = leftOver.substring(0, stateLen);
-                    var strDirs = leftOver.substring(stateLen, leftOver.length);
-                    for (var i = 0; i < strDirs.length; i++) {
-                        cell.dirs.push(strDirs[i]);
-                    }
-                    cell.clickable = true;
-                }
-                else if (asset.startsWith("lamp")) {
-                    cell.name = asset.substring(0, 4);
-                    cell.state = asset.substring(4, asset.length);
-                    cell.dirs = ['T', 'L', 'B', 'R'];
-                }
-                else if (asset.startsWith("battery")) {
-                    cell.name = asset.substring(0, 7);
-                    var strDirs = asset.substring(7, asset.length);
-                    cell.dirs = [strDirs[0], strDirs[1]];
-                }
-            }
-
-            function drawCell(cell) {
-                var dir = '';
-                if (cell.name != 'lamp') {
-                    for (var i in cell.dirs) {
-                        dir += cell.dirs[i];
-                    }
-                }
-                ctx.putImageData(assets[cell.name + cell.state + dir], cell.x, cell.y);
-            }
-
-            function getRelativeCells(cell, vert, hor) {
-                var index = cell.index + hor + (vert * cellsNumber);
-                if (index < 0 || index >= cells.length)
-                    return null;
-
-                var result = cells[index];
-                if (vert === 0 && result.y !== cell.y || hor === 0 && result.x !== cell.x)
-                    return null;
-
-                // var d = (result.y - cell.y) * (result.y - cell.y) + (result.x - cell.x) * (result.x - cell.x)
-                // if (Math.sqrt(d) > cellSize * 2)
-                //     return null;
-
-                return result;
-            }
-
-            function getConnectedCells(cell) {
-                var result = [];
-                for (var i = 0; i < cell.dirs.length; i++) {
-                    var dir = cell.dirs[i];
-                    switch (dir) {
-                        case 'L':
-                            var rc = getRelativeCells(cell, 0, 1);
-                            if (rc != null && rc.dirs.indexOf('R') !== -1)
-                                result.push(rc);
-                            break;
-                        case 'R':
-                            var rc = getRelativeCells(cell, 0, -1);
-                            if (rc != null && rc.dirs.indexOf('L') !== -1)
-                                result.push(rc);
-                            break;
-                        case 'T':
-                            var rc = getRelativeCells(cell, -1, 0);
-                            if (rc != null && rc.dirs.indexOf('B') !== -1)
-                                result.push(rc);
-                            break;
-                        case 'B':
-                            var rc = getRelativeCells(cell, 1, 0);
-                            if (rc != null && rc.dirs.indexOf('T') !== -1)
-                                result.push(rc);
-                            break;
-                    }
-                }
-                return result;
-            }
-
-            function setupConnections(cell, exclude) {
-                if (cell.index == battery.index)
-                    path = {};
-                if (path.hasOwnProperty(cell.index))
-                    return;
-                path[cell.index] = true;
-                var cons = getConnectedCells(cell);
-                for (var i = 0; i < cons.length; i++) {
-                    var con = cons[i];
-                    if (con.index === exclude)
-                        continue;
-                    con.state = 'On';
-                    drawCell(con);
-                    if (con.name !== 'lamp')
-                        setupConnections(con, cell.index);
-                }
-            }
-
-            function turnOffAll() {
-                for (var i = 0; i < cells.length; i++) {
-                    if (cells[i].state === 'On') {
-                        cells[i].state = 'Off';
-                        drawCell(cells[i]);
-                    }
-                }
-            }
-
-            function nextAsset(cell) {
-                var asset = cell.asset;
-
-                function getNextDirs() {
-                    var dir = '';
-                    for (var i in cell.dirs) {
-                        dir += cell.dirs[i];
-                    }
-                    var name = cell.name;
-                    var i = 0;
-                    for (i = 0; i < suffixes[name].length; i++) {
-                        if (dir === suffixes[name][i]) {
-                            break;
-                        }
-                    }
-                    i++;
-                    if (i === suffixes[name].length)
-                        i = 0;
-
-                    dir = suffixes[name][i];
-
-                    var dirs = [];
-                    for (var j = 0; j < dir.length; j++) {
-                        dirs.push(dir[j]);
-                    }
-                    return dirs;
-                }
-
-
-                cell.dirs = getNextDirs();
-
-                drawCell(cell);
-
-                turnOffAll();
-                setupConnections(battery, -1);
-                if (isWin()) {
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-                    ctx.fillRect(0, 0, size, size);
-                    ctx.fillStyle = 'white';
-                    ctx.font = size / 12 + 'px Verdana';
-                    var text = 'Level ' + level + ' complete!';
-                    var measure = ctx.measureText(text);
-                    ctx.fillText(text, size / 2 - measure.width / 2, size / 2 - size / 8);
-                    var resultTime = Math.round((new Date() - time) % 60);
-                    timeAmount += resultTime;
-
-                    text = 'Time: ' + timeAmount + 's (+' + resultTime + 's)';
-                    var fontSize = size / 12;
-                    ctx.font = fontSize + 'px Verdana';
-                    var measure = ctx.measureText(text);
-                    while (measure.width > size) {
-                        fontSize -= 5;
-                        ctx.font = fontSize + 'px Verdana';
-                        measure = ctx.measureText(text);
-                    }
-                    ctx.fillText(text, size / 2 - measure.width / 2, size / 2);
-                }
-            }
-
-            function doMouseDown(event) {
-                if (!isWin()) {
-                    var x = event.pageX - canvas.offsetLeft;
-                    var y = event.pageY - canvas.offsetTop;
-
-                    for (var i = 0; i < cells.length; i++) {
-                        var c = cells[i];
-                        if (c.asset === null || !c.clickable)
-                            continue;
-
-                        if (x > c.x && y > c.y && x < c.x + cellSize && y < c.y + cellSize) {
-                            nextAsset(c);
-                        }
-                    }
+            Particle.prototype.draw = function() {
+                if (this.size === 64) {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, PI_2, false);
+                    ctx.fill();
                 } else {
-                    ctx.clearRect(0, 0, size, size);
-                    for (var i = 0; i < cells.length; i++) {
-                        cells[i].dirs = [];
-                        cells[i].state = '';
-                    }
-                    lampsIndexes = [];
-                    createMap();
-                    setupConnections(battery, -1);
-                }
-            }
+                    var cX = 148 * cos(this.angle);
+                    var cY = 228 * sin(this.angle);
 
-            function isWin() {
-                return cells[lampsIndexes[0]].state === 'On' && cells[lampsIndexes[1]].state === 'On';
-            }
+                    cX /= 2;
+                    cY /= 1;
 
-            function getRandomInt(min, max) {
-              return Math.floor(Math.random() * (max - min)) + min;
-            }
+                    var x = cX * this.lean[0] - cY * this.lean[1];
+                    var y = cX * this.lean[1] + cY * this.lean[0];
 
-            function createAssets() {
-                var assetCanvas = document.createElement('canvas');
-                assetCanvas.width = assetCanvas.height = cellSize;
-                var ctx = assetCanvas.getContext('2d');
-                var cs = cellSize;  // Cell size
-                var as = assetWidth;  // Asset width
-                ctx.strokeStyle = colorPalette[1];
-                ctx.fillStyle = colorPalette[2];
-                ctx.lineWidth = 0.7;
+                    x += centerX;
+                    y += centerY;
 
-                function rotate(dir) {
-                    ctx.translate(assetCanvas.width / 2, assetCanvas.height / 2);
-                    ctx.rotate(dir * Math.PI / 2);
-                    ctx.translate(-assetCanvas.width / 2, -assetCanvas.height / 2);
-                }
+                    var size = 1;
 
-                function save(name) {
-                    assets[name] = ctx.getImageData(0, 0, cs, cs);
-                    ctx.clearRect(0, 0, cs, cs);
-                }
+                    var value = x * y;
+                    size = Math.pow(2.1 - max / value, 5);
 
-                function createWire() {
-                    ctx.fillRect(cs / 2 - as / 2, 0, as, cs);
-                }
-                ctx.fillStyle = colorPalette[3];
-                createWire();
-                save('lineOnTB');
-
-                ctx.fillStyle = colorPalette[2];
-                createWire();
-                save('lineOffTB');
-
-                rotate(1);
-
-                ctx.fillStyle = colorPalette[3];
-                createWire();
-                save('lineOnRL');
-
-                ctx.fillStyle = colorPalette[2];
-                createWire();
-                save('lineOffRL');
-
-                rotate(-1);
-
-                function createBendWire() {
-                    ctx.fillRect(cs / 2 - as / 2, 0, as, cs / 2 + as / 2);
-                    ctx.fillRect(cs / 2, cs / 2 - as / 2, cs / 2, as);
-                }
-                ctx.fillStyle = colorPalette[3];
-                createBendWire();
-                save('bendOnTL');
-                ctx.fillStyle = colorPalette[2];
-                createBendWire();
-                save('bendOffTL');
-
-                rotate(1);
-
-                ctx.fillStyle = colorPalette[3];
-                createBendWire();
-                save('bendOnBL');
-                ctx.fillStyle = colorPalette[2];
-                createBendWire();
-                save('bendOffBL');
-
-                rotate(1);
-
-                ctx.fillStyle = colorPalette[3];
-                createBendWire();
-                save('bendOnBR');
-                ctx.fillStyle = colorPalette[2];
-                createBendWire();
-                save('bendOffBR');
-
-                rotate(1);
-
-                ctx.fillStyle = colorPalette[3];
-                createBendWire();
-                save('bendOnTR');
-                ctx.fillStyle = colorPalette[2];
-                createBendWire();
-                save('bendOffTR');
-
-                rotate(1);
-
-                function createCrossWire() {
-                    ctx.fillRect(cs / 2 - as / 2, 0, as, cs);
-                    ctx.fillRect(cs / 2, cs / 2 - as / 2, cs / 2, as);
-                }
-                ctx.fillStyle = colorPalette[3];
-                createCrossWire();
-                save('crosOnLTB');
-                ctx.fillStyle = colorPalette[2];
-                createCrossWire();
-                save('crosOffLTB');
-
-                rotate(1);
-
-                ctx.fillStyle = colorPalette[3];
-                createCrossWire();
-                save('crosOnBLR');
-                ctx.fillStyle = colorPalette[2];
-                createCrossWire();
-                save('crosOffBLR');
-
-                rotate(1);
-
-                ctx.fillStyle = colorPalette[3];
-                createCrossWire();
-                save('crosOnRTB');
-                ctx.fillStyle = colorPalette[2];
-                createCrossWire();
-                save('crosOffRTB');
-
-                rotate(1);
-
-                ctx.fillStyle = colorPalette[3];
-                createCrossWire();
-                save('crosOnTLR');
-                ctx.fillStyle = colorPalette[2];
-                createCrossWire();
-                save('crosOffTLR');
-
-                rotate(1);
-
-                // Battery
-                function createBattery() {
-                    ctx.fillStyle = colorPalette[3];
-                    ctx.fillRect(as, as * 1.5, cs - as * 2, cs - as * 3);
-                    ctx.fillStyle = '#fff';
-                    ctx.fillRect(0, cs / 2 - as / 2, as / 2, as);
-                    ctx.fillRect(cs - as / 2, cs / 2 - as / 2, as / 2, as);
                     ctx.beginPath();
-                    ctx.moveTo(as / 2, cs / 2);
-                    ctx.lineTo(as, cs / 2);
-                    ctx.lineTo(as, cs / 2 - as);
-                    ctx.lineTo(cs - as, cs / 2 - as);
-                    ctx.lineTo(cs - as, cs / 2);
-                    ctx.lineTo(cs - as / 2, cs / 2);
-                    ctx.moveTo(as, cs / 2);
-                    ctx.lineTo(as, cs / 2 + as);
-                    ctx.lineTo(cs - as, cs / 2 + as);
-                    ctx.lineTo(cs - as, cs / 2);
-                    ctx.strokeStyle = '#fff';
-                    ctx.stroke();
-                }
-                ctx.strokeStyle = colorPalette[1];
-                createBattery();
-                save('batteryLR');
-
-                rotate(1);
-
-                createBattery();
-                save('batteryTB');
-
-                rotate(-1);
-
-                // Lamp
-                function createRawLamp() {
-                    ctx.fillStyle = '#fff';
-                    ctx.fillRect(0, cs / 2 - as / 2, as / 3, as);
-                    ctx.fillRect(cs - as / 3, cs / 2 - as / 2, as / 3, as);
-                    ctx.fillRect(cs / 2 - as / 2, 0, as, as / 3);
-                    ctx.fillRect(cs / 2 - as / 2, cs - as / 3, as, as / 3);
-                    ctx.fillStyle = colorPalette[2];
-                    ctx.beginPath();
-                    ctx.moveTo(as / 3, as / 3);
-                    ctx.lineTo(as / 3, cs - as / 3);
-                    ctx.lineTo(cs - as / 3, cs - as / 3);
-                    ctx.lineTo(cs - as / 3, as / 3);
-                    ctx.lineTo(as / 3, as / 3);
-                    ctx.stroke();
-                    var offsetY = as / 10;
-                    ctx.beginPath();
-                    ctx.arc(cs / 2, cs / 2 - as / 2, as / 2, 0, 2 * Math.PI, false);
-                    ctx.fillStyle = '#fff';
+                    ctx.arc(x, y, size, 0, PI_2, false);
                     ctx.fill();
-                    ctx.fillRect(cs / 2 - as / 4, cs / 2 - as / 2, as / 2, as / 2 + offsetY);
-                    ctx.beginPath();
-                    ctx.moveTo(cs / 2 + as / 4, cs / 2 + offsetY);
-                    ctx.lineTo(cs / 2 - as / 4, cs / 2 + as / 8 + offsetY);
-                    offsetY += as / 8;
-                    ctx.moveTo(cs / 2 + as / 4, cs / 2 + offsetY);
-                    ctx.lineTo(cs / 2 - as / 4, cs / 2 + as / 8 + offsetY);
-                    offsetY += as / 8;
-                    ctx.moveTo(cs / 2 + as / 4, cs / 2 + offsetY);
-                    ctx.lineTo(cs / 2 - as / 4, cs / 2 + as / 8 + offsetY);
-                    ctx.lineWidth = 1;
-                    ctx.strokeStyle = '#fff';
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.arc(cs / 2, cs / 2 + as / 2, as / 10, 0, 2 * Math.PI, false);
-                    ctx.fillStyle = '#fff';
-                    ctx.fill();
-                    ctx.lineWidth = 0.7;
                 }
-                //ctx.fillRect(as / 3, as / 3, cs - as / 1.5, cs - as / 1.5);
-                createRawLamp();
-                save('lampOff');
+            };
 
-                ctx.fillStyle = colorPalette[3];
-                ctx.fillRect(as / 3, as / 3, cs - as / 1.5, cs - as / 1.5);
-                createRawLamp();
-                save('lampOn');
-            }
-            function createMap() {
-                var shuffleIndexes = shuffle(Array.apply(null, {length: cells.length}).map(Number.call, Number));
-                var horWall, vertWall;
+            var planet = new Particle(width / 2, height / 2, 64);
 
-                while (true) {
-                    battery = cells[shuffleIndexes[0]];
-                    horWall = getRelativeCells(battery, 0, 1) === null || getRelativeCells(battery, 0, -1) === null;
-                    vertWall = getRelativeCells(battery, -1, 0) === null || getRelativeCells(battery, 1, 0) === null;
+            var entities = [];
 
-                    if (battery.index === 0 ||
-                        battery.index === cells.length - 1 ||
-                        battery.index === cells.length - cellsNumber ||
-                        battery.index === cellsNumber - 1 ||
-                        horWall || vertWall)
-                            shuffleIndexes = shuffle(Array.apply(null, {length: cells.length}).map(Number.call, Number));
-                    else break;
-                }
-                setCellAsset(battery, "battery" + (Math.random() > 0.5 ? "LR" : "TB"));
-                drawCell(battery);
-
-                var lc = 0;
-                var preLamp = 0;
-                for (var i = 1; i < shuffleIndexes.length; i++) {
-                    var cell = cells[shuffleIndexes[i]];
-                    if (lc < 2 && Math.abs(shuffleIndexes[i] - shuffleIndexes[0]) > 30 && Math.abs(shuffleIndexes[i] - preLamp) > 10) {
-                        setCellAsset(cell, 'lampOff');
-                        preLamp = shuffleIndexes[i];
-                        lampsIndexes.push(preLamp);
-                        lc++;
-                    } else {
-                        var type = prefixes[getRandomInt(0, prefixes.length)];
-                        var resultDir = 0;
-                        if (Math.random() > 0.3) {
-                            var minCons = 4;
-                            for (var j = 0; j < suffixes[type].length; j++) {
-                                var dir = suffixes[type][j];
-                                setCellAsset(cell, type + "Off" + dir);
-
-                                var cons = getConnectedCells(cell).length;
-                                if (cons < minCons) {
-                                    resultDir = j;
-                                    minCons = cons;
-                                }
-                            }
-                        } else resultDir = getRandomInt(0, suffixes[type].length);
-                        setCellAsset(cell, type + "Off" + suffixes[type][resultDir]);
-                    }
-                    drawCell(cell);
-                }
-                time = new Date();
-                level++;
+            for (var i = 0; i < count; i++) {
+                var p = new Particle(0, 0, 0, Math.PI / 2);
+                p.angle = step * i;
+                entities.push(p);
             }
 
-            function shuffle(array) {
-                var counter = array.length;
-
-                // While there are elements in the array
-                while (counter > 0) {
-                    // Pick a random index
-                    var index = Math.floor(Math.random() * counter);
-
-                    // Decrease counter by 1
-                    counter--;
-
-                    // And swap the last element with it
-                    var temp = array[counter];
-                    array[counter] = array[index];
-                    array[index] = temp;
-                }
-                return array;
+            for (var i = 0; i < count; i++) {
+                var p = new Particle(0, 0, 0, Math.PI / 2);
+                p.angle = step * i;
+                entities.push(p);
             }
+
+            for (var i = 0; i < count; i++) {
+                var p = new Particle(0, 0, 0, Math.PI / 2.5);
+                p.angle = step * i;
+                entities.push(p);
+            }
+
+            for (var i = 0; i < count; i++) {
+                var p = new Particle(0, 0, 0, -Math.PI / 2.5);
+                p.angle = step * i;
+                entities.push(p);
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                planet.draw();
+                for (var i = 0; i < entities.length; i++) {
+                    var e = entities[i];
+                    e.angle += Math.PI / 180;
+                    entities[i].draw();
+                }
+                requestAnimationFrame(draw);
+            }
+            draw();
+
+            function cos(angle) {
+                return Math.cos(angle);
+            }
+
+            function sin(angle) {
+                return Math.sin(angle);
+            }
+
+            function getRandom(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
         </script>
     </body>
 </html>
