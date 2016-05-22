@@ -1,0 +1,444 @@
+<html>
+
+<head>
+    <style>
+        * {
+            margin: 0
+        }
+
+        body {
+            overflow: hidden;
+            background-color: #111;
+        }
+
+        #render {
+            background: black;
+            bottom: 0;
+            height: 640px;
+            left: 0;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 800px;
+        }
+
+        .info {
+            background: transparent;
+            color: white;
+            bottom: 0;
+            height: 640px;
+            left: 0;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 800px;
+            font-family: TimesNewRoman, 'Times New Roman', Times, Baskerville, Georgia, serif;
+        	font-size: 14px;
+        	font-style: normal;
+        	font-variant: normal;
+        	font-weight: 400;
+        	line-height: 20px;
+        }
+
+        #caption {
+            padding: 20px;
+        }
+
+        #solve {
+            display: inline;
+            color: pink;
+        }
+
+        #score {
+            display: inline-block;;
+            color: lightblue;
+        }
+
+        p {
+            padding-left: 20px;
+        }
+    </style>
+    <script src="dat.gui.min.js"></script>
+    <script src="matter.min.js"></script>
+</head>
+
+<body>
+    <div id="render"></div>
+    <div class="info">
+        <div id="caption">
+            Current variables:<br />
+            <div id="current">
+                <p>Circle spawn: [X: 0, Y: 0]</p><br />
+                <p>Square spawn: [X: 0, Y: 0]</p>
+                <p>Square size: 0</p>
+                <p>Min. distance: <div id="score">0</div></p>
+            </div>
+            <br /><br />
+            Best solution [<div id="solve">Not found yet</div>]:
+            <div id="solution">
+                <p>Circle spawn: [X: -, Y: -]</p>
+                <p>Square: [X: -, Y: -, Size: -]</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        var currentWidget = document.getElementById('current');
+        var solutionWidget = document.getElementById('solution');
+        var solveCaption = document.getElementById('solve');
+        function setStats(dom, cx, cy, sx, sy, ss) {
+            if (dom === 'current') {
+                var score = (bestSolution >= width * height) ? '-' : bestSolution.toFixed(2);
+                currentWidget.innerHTML =
+                    '<p>Circle spawn: [X: ' + cx + ', Y: ' + cy + ']</p><br />' +
+                    '<p>Square spawn: [X: ' + sx + ', Y: ' + sy + ']</p>' +
+                    '<p>Square size: ' + ss + '</p><br />' +
+                    '<p id="score">Min. distance: ' + score + '</p>';
+            } else {
+                solutionWidget.innerHTML =
+                    '<p>Circle spawn: [X: ' + cx + ', Y: ' + cy + ']</p>' +
+                    '<p>Square: [X: ' + sx + ', Y: ' + sy + ', Size: ' + ss + ']</p>';
+            }
+        }
+
+        function shuffle(array) {
+            for (var i = array.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+            return array;
+        }
+        gui = new dat.GUI();
+        dat.GUI.prototype.removeFolder = function(name) {
+          var folder = this.__folders[name];
+          if (!folder) {
+            return;
+          }
+          folder.close();
+          this.__ul.removeChild(folder.domElement.parentNode);
+          delete this.__folders[name];
+          this.onResize();
+        }
+
+        var guiData = {'mr': 25};
+        for (var i = 0; i < 10; i++)
+            guiData[i] = 0;
+
+        var optionsFolder = gui.addFolder('Options');
+        var mutationRate = optionsFolder.add(guiData, 'mr', 0, 100).name('Mutation rate');
+        optionsFolder.open();
+
+        var limits = [[45, 195], [0, 475], [290, 435], [0, 400], [50, 250]];
+        function rnd(limit) {
+            return Math.floor(Math.random() * (limit[1] - limit[0] + 1)) + limit[0];
+        }
+
+        function rndValue(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        var renderContainer = document.getElementById('render');
+        var width = renderContainer.offsetWidth;
+        var height = renderContainer.offsetHeight;
+
+        var Engine = Matter.Engine,
+            Render = Matter.Render,
+            World = Matter.World,
+            Bodies = Matter.Bodies,
+            Constraint = Matter.Constraint,
+            Runner = Matter.Runner,
+            Events = Matter.Events,
+            Body = Matter.Body,
+            Common = Matter.Common;
+
+        // static?
+        var catapultY = 520,
+            catapultX = 200;
+
+        var bulletRadius = 25;
+        var holeY = 150;
+        var holeSize = bulletRadius * 2 + 10;
+
+        var wallX = 700,
+            wallWidth = 20;
+
+        // dynamic
+        // var bulletX = 195, // min 45 max 195 op 110
+        //     bulletY = 350, // min 0 max 475 op 350
+        //     bulletRestitution = 0.1;
+        //
+        // var cargoX = 360, // min 290 max 435 op 360
+        //     cargoY = 100, // min 0 max 400 op 100
+        //     cargoSize = 100, // min 50 max 250 op 150
+        //     cargoDensity = 0.1;
+        var min;
+        var bestSolution = width * height;
+
+        var engine = Engine.create();
+        engine.enableSleeping = true;
+        var render = Render.create({
+            element: renderContainer,
+            engine: engine,
+            options: {
+                width: width,
+                height: height,
+                wireframes: true,
+                showSleeping: false,
+                showCollisions: true,
+                showVelocity: true,
+                showAngleIndicator: true
+            }
+        });
+
+        function Generation(number) {
+            this.number = number;
+            this.currentIndividual = -1;
+            this.individuals = [];
+        }
+
+        Generation.prototype.getIndividual = function() {
+            this.currentIndividual++;
+            return this.individuals[this.currentIndividual];
+        };
+
+        Generation.prototype.randomGeneration = function() {
+            for (var i = 0; i < 8; i++) {
+                this.individuals.push(new Individual(i, [rnd(limits[0]), rnd(limits[1]), rnd(limits[2]), rnd(limits[3]), rnd(limits[4])]));
+            }
+        };
+
+        Generation.prototype.addIndividual = function(genes) {
+            this.individuals.push(new Individual(this.individuals.length, genes));
+        };
+
+        Generation.prototype.addIndividualObject = function(o) {
+            this.individuals.push(o);
+        };
+
+        function Individual(number, genes) {
+            this.number = number;
+            this.genes = genes;
+            this.fitness = Infinity;
+        }
+
+        Individual.prototype.mutate = function() {
+            var index = Math.floor(Math.random() * this.genes.length);
+
+            var sign = Math.random() > 0.5 ? 1 : -1;
+            var value = this.genes[index];
+
+            this.genes[index] = Common.clamp(value + (sign * value * 0.1), limits[index][0], limits[index][1]);
+        };
+
+        Individual.prototype.equal = function(individual) {
+            for (var i = 0; i < this.genes.length; i++) {
+                if (this.genes[i] !== individual.genes[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function createGeneration(preG) {
+            if (preG === 0) {
+                var g = new Generation(0);
+                g.randomGeneration();
+                return g;
+            }
+            var g = new Generation(preG.number + 1);
+            var sortedArray = preG.individuals;
+            sortedArray.sort(function(a, b) {
+                return a.fitness - b.fitness;
+            });
+            var parents = sortedArray.splice(0, Math.floor(sortedArray.length / 2));
+
+            var sameFlag = true;
+            for (var i = 0; i < parents.length; i++) {
+                g.addIndividual(parents[i].genes);
+                if (parents[i].fitness !== parents[0].fitness)
+                    sameFlag = false;
+            }
+
+            if (sameFlag && parents[0].fitness > bulletRadius / 2)
+                guiData['mr'] = 75;
+            else
+                guiData['mr'] = 25;
+            mutationRate.updateDisplay();
+
+            parents = shuffle(parents);
+            for (var i = 0; i < parents.length; i += 2) {
+                // var p1 = parents[i].genes;
+                // var p2 = parents[i+1].genes;
+                //
+                // var ind1 = new Individual(g.individuals.length, [p1[0], p1[1], p2[2], p2[3], p2[4]]);
+                // if (Math.random() * 100 <= guiData['mr'])
+                //     ind1.mutate();
+                // var ind2 = new Individual(g.individuals.length + 1, [p2[0], p2[1], p1[2], p1[3], p1[4]]);
+                // if (Math.random() * 100 <= guiData['mr'])
+                //     ind2.mutate();
+                //
+                // g.addIndividualObject(ind1);
+                // g.addIndividualObject(ind2);
+
+                var p1 = parents[i];
+                var p2 = parents[i+1];
+                var genes = [p1.genes, p2.genes];
+                var childOne = [genes[0][0], genes[0][1], genes[1][2], genes[1][3], genes[1][4]];
+                var childTwo = [genes[1][0], genes[1][1], genes[0][2], genes[0][3], genes[0][4]];
+
+                function createChilds(genes) {
+                    var genesCount = genes[0].length;
+                    var del = rndValue(1, genesCount - 1);
+
+                    var c1 = [], c2 = [];
+
+                    for (var i = 0; i < genesCount; i++) {
+                        c1.push(genes[i < del ? 0 : 1][i]);
+                        c2.push(genes[i < del ? 1 : 0][i]);
+                    }
+
+                    return [c1, c2];
+                }
+
+                if (p1.equal(p2)) {
+                    var r = createChilds(genes);
+                    childOne = r[0];
+                    childTwo = r[1];
+                    console.log('mut');
+                }
+
+                var ind1 = new Individual(g.individuals.length, childOne);
+                if (Math.random() * 100 <= guiData['mr'])
+                    ind1.mutate();
+                var ind2 = new Individual(g.individuals.length + 1, childTwo);
+                if (Math.random() * 100 <= guiData['mr'])
+                    ind2.mutate();
+
+                g.addIndividualObject(ind1);
+                g.addIndividualObject(ind2);
+            }
+            return g;
+        }
+
+        function reset() {
+            individual.fitness = min;
+
+            guiData[gen.currentIndividual] = min;
+            genFolder.add(guiData, gen.currentIndividual);
+
+            if (bestSolution > min) {
+                bestSolution = min;
+                if (bestSolution < bulletRadius / 2) {
+                    solveCaption.innerHTML = 'Generation ' + gen.number + ', Dst: ' + bestSolution.toFixed(2)  + '';
+                    var data = individual.genes;
+                    setStats('solution', data[0], data[1], data[2], data[3], data[4]);
+                }
+            }
+            World.clear(engine.world);
+            Engine.clear(engine);
+
+            if (render) {
+                var controller = render.controller;
+                if (controller && controller.clear)
+                    controller.clear(render);
+            }
+
+            Body._nextCollidingGroupId = 1;
+            Body._nextNonCollidingGroupId = -1;
+            Body._nextCategory = 0x0001;
+            Common._nextId = 0;
+            Common._seed = 0;
+
+            if (gen.currentIndividual == 7) {
+                gui.removeFolder('Generation ' + gen.number);
+
+                gen = createGeneration(gen);
+                genFolder = gui.addFolder('Generation ' + gen.number);
+                genFolder.open();
+            }
+
+            individual = gen.getIndividual();
+            bulletX = individual.genes[0];
+            bulletY = individual.genes[1];
+
+            cargoX = individual.genes[2];
+            cargoY = individual.genes[3];
+            cargoSize = individual.genes[4];
+            setStats('current', individual.genes[0], individual.genes[1], individual.genes[2], individual.genes[3], individual.genes[4]);
+
+            createWorld();
+        }
+
+        var catapult, catapultAnchor, prop, bullet, cargo, wallUp, wallDown, target;
+        function createWorld() {
+            min = width * height
+
+            catapult = Bodies.rectangle(catapultX, catapultY, 320, 20, {});
+
+            catapultAnchor = Constraint.create({ bodyA: catapult, pointB: { x: catapult.position.x, y: catapult.position.y } });
+            prop = Bodies.rectangle(catapultX - 150, 555, 20, 50, { isStatic: true });
+
+            bullet = Bodies.circle(bulletX, bulletY, bulletRadius, { restitution: bulletRestitution, label: "bullet", sleepThreshold: 240 });
+
+            cargo = Bodies.rectangle(cargoX, cargoY, cargoSize, cargoSize, { density: cargoDensity, label: "cargo" });
+            wallUp = Bodies.rectangle(wallX, holeY / 2, wallWidth, holeY, { isStatic: true, label: "wall" });
+            var downHeight = height - holeY - holeSize;
+            var offset = wallUp.bounds.max.y + downHeight / 2 + holeSize;
+            wallDown = Bodies.rectangle(wallX, offset, wallWidth, downHeight, { isStatic: true, label: "wall" });
+            target = Bodies.rectangle(wallX + wallWidth * 1.5, wallUp.bounds.max.y + holeSize / 2, 5, 5, { isStatic: true, isSensor: true, label: "target" });
+            World.add(engine.world, [cargo, bullet, catapult, catapultAnchor, prop, wallUp, wallDown, target]);
+        }
+
+        var gen = createGeneration(0);
+
+        var genFolder = gui.addFolder('Generation ' + gen.number);
+        genFolder.open();
+
+        var individual = gen.getIndividual();
+        var bulletX = individual.genes[0],
+            bulletY = individual.genes[1],
+            bulletRestitution = 0.1;
+
+        var cargoX = individual.genes[2],
+            cargoY = individual.genes[3],
+            cargoSize = individual.genes[4],
+            cargoDensity = 0.1;
+
+        setStats('current', individual.genes[0], individual.genes[1], individual.genes[2], individual.genes[3], individual.genes[4]);
+
+        // Events.on(engine, 'collisionStart', function(event) {
+        //     var pairs = event.pairs;
+        //     for (var i = 0; i < pairs.length; i++) {
+        //         var bodyA = pairs[i].bodyA;
+        //         var bodyB = pairs[i].bodyB;
+        //
+        //         if (bodyA.label === 'bullet' && bodyB.label === 'target') {
+        //             var data = individual.genes;
+        //             setStats('solution', data[0], data[1], data[2], data[3], data[4]);
+        //         }
+        //     }
+        // });
+
+        createWorld();
+
+        Render.run(render);
+        (function run() {
+            window.requestAnimationFrame(run);
+
+            var distance = Math.sqrt(Math.pow(target.position.x - bullet.position.x, 2) + Math.pow(target.position.y - bullet.position.y, 2));
+            if (min > distance)
+                min = distance;
+
+            if (bullet.position.y > height || bullet.position.y < 0 || bullet.isSleeping) {
+                reset();
+            }
+
+            Engine.update(engine, 1000 / 60);
+        })();
+    </script>
+</body>
+
+</html>
