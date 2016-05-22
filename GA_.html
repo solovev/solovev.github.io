@@ -131,7 +131,7 @@
         var mutationRate = optionsFolder.add(guiData, 'mr', 0, 100).name('Mutation rate');
         optionsFolder.open();
 
-        var limits = [[45, 195], [0, 475], [290, 350], [0, 400], [50, 100]];
+        var limits = [[45, 195], [0, 475], [290, 435], [0, 400], [50, 250]];
         function rnd(limit) {
             return Math.floor(Math.random() * (limit[1] - limit[0] + 1)) + limit[0];
         }
@@ -225,19 +225,13 @@
         }
 
         Individual.prototype.mutate = function() {
-			console.log("Mutation!");
+            var index = Math.floor(Math.random() * this.genes.length);
 
-			var indexArr = [];
-			for (var i = 0; i < this.genes.length; i++) {
-				indexArr.push(i);
-			}
-			indexArr = shuffle(indexArr);
-            this.genes[indexArr[0]] = Common.clamp(this.genes[indexArr[0]] + ((Math.random() > 0.5 ? 1 : -1) * this.genes[indexArr[0]] * 0.1), limits[indexArr[0]][0], limits[indexArr[0]][1]);
-			if (Math.random() <= 0.75)
-				this.genes[indexArr[1]] = Common.clamp(this.genes[indexArr[1]] + ((Math.random() > 0.5 ? 1 : -1) * this.genes[indexArr[1]] * 0.2), limits[indexArr[1]][0], limits[indexArr[1]][1]);
-			if (Math.random() <= 0.50)
-				this.genes[indexArr[2]] = Common.clamp(this.genes[indexArr[2]] + ((Math.random() > 0.5 ? 1 : -1) * this.genes[indexArr[2]] * 0.3), limits[indexArr[2]][0], limits[indexArr[2]][1]);
-		};
+            var sign = Math.random() > 0.5 ? 1 : -1;
+            var value = this.genes[index];
+
+            this.genes[index] = Common.clamp(value + (sign * value * 0.1), limits[index][0], limits[index][1]);
+        };
 
         Individual.prototype.equal = function(individual) {
             for (var i = 0; i < this.genes.length; i++) {
