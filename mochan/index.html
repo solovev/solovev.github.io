@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>?</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			font-family: "Helvetica";
+			color: black;
+		}
+		
+		.wrapper {
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-flow: column;
+		}
+		
+		#node-count {
+			margin-top: 50px;
+		}
+		
+		input[type="button"] {
+			padding: 0 5px;
+		}
+		
+		#table-wrapper,
+		#n1,
+		#n2,
+		#n3,
+		#n4,
+		#n5,
+		#n6,
+		#n7,
+		#n8 {
+			text-align: center;
+		}
+		
+		table {
+			border-collapse: collapse;
+		}
+		
+		td,
+		th {
+			width: 2.5rem;
+			height: 1.5rem;
+			border: 1px solid #ccc;
+			text-align: center;
+		}
+		
+		th {
+			background: lightblue;
+			border-color: white;
+			color: white;
+			text-shadow: 0 1px #000;
+		}
+		
+		td {
+			padding: 2px 5px;
+			font-size: 1rem;
+		}
+		
+		input[type="number"] {
+			width: 3rem;
+			height: 2rem;
+		}
+		
+		.hidden {
+			display: none;
+		}
+		
+		.data-wrapper {
+			margin-top: 10px;
+		}
+		
+		span.title {
+			margin-top: 30px;
+		}
+		
+		span.descr {
+			font-size: 0.7rem;
+		}
+		
+		#data {
+			width: 300px;
+		}
+		
+		img {
+			padding: 10px 30px;
+		}
+		
+		img.no {
+			padding: 0;
+			opacity: 0;
+		}
+		
+		img.no:hover {
+			opacity: 1;
+			-webkit-transition: opacity 1s linear;
+			-moz-transition: opacity 1s linear;
+			-o-transition: opacity 1s linear;
+			transition: opacity 1s linear;
+		}
+		
+		.text {
+			margin-top: 5px;
+			text-align: center;
+		}
+		
+		.title_m {
+			width: 100%;
+			background: rgba(0, 0, 0, 0.1);
+			text-align: center;
+			margin-top: 30px;
+		}
+	</style>
+	<script src="bundle.js"></script>
+</head>
+
+<body>
+	<div class="wrapper">
+		<span class="title">Количество абонентов на узлах</span>
+		<div class="data-wrapper">
+			<input id="data" type="text" placeholder="0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000"></input>
+			<input type="button" id="go" value="Газуй"></input>
+		</div>
+		<span class="descr" id="dsc">Указывается через запятую.</span>
+		<span class="descr" id="dsc">Восемь значений: n<sub>1</sub>, n<sub>2</sub>, ..., n<sub>8</sub></span>
+
+		<div class="title_m hidden">1) Коэффициент распределения трафика</div>
+		<div class="hidden" id="n1">
+			<div class="eqs">
+				<img src="./img/kj.png" alt="kj">
+				<img src="./img/nsum.png" alt="nsum">
+
+			</div>
+			N<sub>a</sub> = 8<br> n
+			<sub>∑</sub> = <span id="nSum">0</span><br><br>
+			<table style="width:100%">
+				<caption>K<sub>1...8</sub></caption>
+				<tr>
+					<td id="k1">0</td>
+					<td id="k2">0</td>
+					<td id="k3">0</td>
+					<td id="k4">0</td>
+					<td id="k5">0</td>
+					<td id="k6">0</td>
+					<td id="k7">0</td>
+					<td id="k8">0</td>
+				</tr>
+			</table>
+
+		</div>
+
+		<div class="title_m hidden">2) Интенсивность нагрузки в направлениях связи</div>
+		<div class="hidden" id="n2">
+			<div class="text">
+				<b>y<sub>i</sub> = n<sub>i</sub> ⋅ y<sub>0</sub></b> (Эрл), <b>i = 1...N<sub>a</sub></b>, <b>y<sub>0</sub> = 0.05</b>
+				<br>
+				<table style="width:100%">
+					<caption>y<sub>1...8</sub></caption>
+					<tr>
+						<td id="y1">0</td>
+						<td id="y2">0</td>
+						<td id="y3">0</td>
+						<td id="y4">0</td>
+						<td id="y5">0</td>
+						<td id="y6">0</td>
+						<td id="y7">0</td>
+						<td id="y8">0</td>
+					</tr>
+				</table>
+				<br>
+				<span class="descr">На основе коэффициента распределения:</span>
+				<br> <b>y
+				<sub>ij</sub> = k<sub>ij</sub> ⋅ y<sub>i</sub></b> (Эрл) k<sub>ij</sub> ~ K<sub>j</sub>
+				<br>
+			</div>
+			<br>
+			<table id="n2_table" style="width:100%">
+				<caption>Υ</caption>
+				<tr id="n2_0"> </tr>
+				<tr id="n2_1"> </tr>
+				<tr id="n2_2"> </tr>
+				<tr id="n2_3"> </tr>
+				<tr id="n2_4"> </tr>
+				<tr id="n2_5"> </tr>
+				<tr id="n2_6"> </tr>
+				<tr id="n2_7"> </tr>
+			</table>
+
+		</div>
+
+		<div class="title_m hidden">3) Модель сети</div>
+		<div class="hidden" id="n3">
+			<br><span class="descr">Граф представлен матрицей расстояний между вершинами</span>
+			<div class="eqs">
+				<img src="./img/n3m.png" alt="n3m">
+
+			</div>
+			<span class="descr">C
+			<sub>ij</sub> = 1 (Есть ребро) или <b>∞</b> (Ребра нет)</span> <br> <span class="descr">N = 12 (Все узлы связи)</span>
+			<table id="edges-length-table">
+				<tr>
+					<th id="n">С</th>
+					<th id="1" style="background: lightblue;">1</th>
+					<th id="2" style="background: lightblue;">2</th>
+					<th id="3" style="background: lightblue;">3</th>
+					<th id="4" style="background: lightblue;">4</th>
+					<th id="5" style="background: lightblue;">5</th>
+					<th id="6" style="background: lightblue;">6</th>
+					<th id="7" style="background: lightblue;">7</th>
+					<th id="8" style="background: lightblue;">8</th>
+					<th id="9" style="background: lightblue;">9</th>
+					<th id="10" style="background: lightblue;">10</th>
+					<th id="11" style="background: lightblue;">11</th>
+					<th id="12" style="background: lightblue;">12</th>
+				</tr>
+				<tr>
+					<th id="r1" style="background: lightblue;">1</th>
+					<td id="0*0">0</td>
+					<td id="0*1">∞</td>
+					<td id="0*2">∞</td>
+					<td id="0*3">∞</td>
+					<td id="0*4">∞</td>
+					<td id="0*5">∞</td>
+					<td id="0*6">∞</td>
+					<td id="0*7">∞</td>
+					<td id="0*8">1</td>
+					<td id="0*9">∞</td>
+					<td id="0*10">∞</td>
+					<td id="0*11">∞</td>
+				</tr>
+				<tr>
+					<th id="r2" style="background: lightblue;">2</th>
+					<td id="1*0">∞</td>
+					<td id="1*1">0</td>
+					<td id="1*2">∞</td>
+					<td id="1*3">∞</td>
+					<td id="1*4">∞</td>
+					<td id="1*5">∞</td>
+					<td id="1*6">∞</td>
+					<td id="1*7">∞</td>
+					<td id="1*8" style="background: white;">∞</td>
+					<td id="1*9">1</td>
+					<td id="1*10">∞</td>
+					<td id="1*11">∞</td>
+				</tr>
+				<tr>
+					<th id="r3" style="background: lightblue;">3</th>
+					<td id="2*0">∞</td>
+					<td id="2*1">∞</td>
+					<td id="2*2">0</td>
+					<td id="2*3">∞</td>
+					<td id="2*4" style="background: white;">∞</td>
+					<td id="2*5">∞</td>
+					<td id="2*6" style="background: white;">∞</td>
+					<td id="2*7" style="background: white;">∞</td>
+					<td id="2*8">1</td>
+					<td id="2*9">∞</td>
+					<td id="2*10">∞</td>
+					<td id="2*11">∞</td>
+				</tr>
+				<tr>
+					<th id="r4" style="background: lightblue;">4</th>
+					<td id="3*0">∞</td>
+					<td id="3*1">∞</td>
+					<td id="3*2">∞</td>
+					<td id="3*3">0</td>
+					<td id="3*4">∞</td>
+					<td id="3*5">∞</td>
+					<td id="3*6">∞</td>
+					<td id="3*7" style="background: white;">∞</td>
+					<td id="3*8" style="background: white;">∞</td>
+					<td id="3*9">1</td>
+					<td id="3*10">∞</td>
+					<td id="3*11" style="background: white;">∞</td>
+				</tr>
+				<tr>
+					<th id="r5" style="background: lightblue;">5</th>
+					<td id="4*0">∞</td>
+					<td id="4*1">∞</td>
+					<td id="4*2" style="background: white;">∞</td>
+					<td id="4*3">∞</td>
+					<td id="4*4">0</td>
+					<td id="4*5">∞</td>
+					<td id="4*6">∞</td>
+					<td id="4*7">∞</td>
+					<td id="4*8">∞</td>
+					<td id="4*9">∞</td>
+					<td id="4*10">1</td>
+					<td id="4*11">∞</td>
+				</tr>
+				<tr>
+					<th id="r6" style="background: lightblue;">6</th>
+					<td id="5*0">∞</td>
+					<td id="5*1">∞</td>
+					<td id="5*2">∞</td>
+					<td id="5*3">∞</td>
+					<td id="5*4">∞</td>
+					<td id="5*5">0</td>
+					<td id="5*6">∞</td>
+					<td id="5*7">∞</td>
+					<td id="5*8">∞</td>
+					<td id="5*9">∞</td>
+					<td id="5*10">∞</td>
+					<td id="5*11">1</td>
+				</tr>
+				<tr>
+					<th id="r7" style="background: lightblue;">7</th>
+					<td id="6*0">∞</td>
+					<td id="6*1">∞</td>
+					<td id="6*2" style="background: white;">∞</td>
+					<td id="6*3">∞</td>
+					<td id="6*4">∞</td>
+					<td id="6*5">∞</td>
+					<td id="6*6">0</td>
+					<td id="6*7">∞</td>
+					<td id="6*8">∞</td>
+					<td id="6*9">∞</td>
+					<td id="6*10">1</td>
+					<td id="6*11">∞</td>
+				</tr>
+				<tr>
+					<th id="r8" style="background: lightblue;">8</th>
+					<td id="7*0">∞</td>
+					<td id="7*1">∞</td>
+					<td id="7*2" style="background: white;">∞</td>
+					<td id="7*3" style="background: white;">∞</td>
+					<td id="7*4">∞</td>
+					<td id="7*5">∞</td>
+					<td id="7*6">∞</td>
+					<td id="7*7">0</td>
+					<td id="7*8">∞</td>
+					<td id="7*9">∞</td>
+					<td id="7*10">∞</td>
+					<td id="7*11">1</td>
+				</tr>
+				<tr>
+					<th id="r9" style="background: lightblue;">9</th>
+					<td id="8*0">1</td>
+					<td id="8*1" style="background: white;">∞</td>
+					<td id="8*2">1</td>
+					<td id="8*3" style="background: white;">∞</td>
+					<td id="8*4">∞</td>
+					<td id="8*5">∞</td>
+					<td id="8*6">∞</td>
+					<td id="8*7">∞</td>
+					<td id="8*8">0</td>
+					<td id="8*9">1</td>
+					<td id="8*10">1</td>
+					<td id="8*11">1</td>
+				</tr>
+				<tr>
+					<th id="r10" style="background: lightblue;">10</th>
+					<td id="9*0">∞</td>
+					<td id="9*1">1</td>
+					<td id="9*2">∞</td>
+					<td id="9*3">1</td>
+					<td id="9*4">∞</td>
+					<td id="9*5">∞</td>
+					<td id="9*6">∞</td>
+					<td id="9*7">∞</td>
+					<td id="9*8">1</td>
+					<td id="9*9">0</td>
+					<td id="9*10">1</td>
+					<td id="9*11">1</td>
+				</tr>
+				<tr>
+					<th id="r11" style="background: lightblue;">11</th>
+					<td id="10*0">∞</td>
+					<td id="10*1">∞</td>
+					<td id="10*2">∞</td>
+					<td id="10*3">∞</td>
+					<td id="10*4">1</td>
+					<td id="10*5">∞</td>
+					<td id="10*6">1</td>
+					<td id="10*7">∞</td>
+					<td id="10*8">1</td>
+					<td id="10*9">1</td>
+					<td id="10*10">0</td>
+					<td id="10*11">1</td>
+				</tr>
+				<tr>
+					<th id="r12" style="background: lightblue;">12</th>
+					<td id="11*0">∞</td>
+					<td id="11*1">∞</td>
+					<td id="11*2">∞</td>
+					<td id="11*3" style="background: white;">∞</td>
+					<td id="11*4">∞</td>
+					<td id="11*5">1</td>
+					<td id="11*6">∞</td>
+					<td id="11*7">1</td>
+					<td id="11*8">1</td>
+					<td id="11*9">1</td>
+					<td id="11*10">1</td>
+					<td id="11*11">0</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="title_m hidden">4) Нахождение кратчайших маршрутов</div>
+		<div class="hidden" id="n4">
+			<br><span class="descr">На основе матрицы <b>C</b> (из 3го пункта) построим матрицу кратчайших путей R.</span><br>
+			<table>
+				<tr>
+					<th id="n" style="background: orange;">R</th>
+					<th id="1" style="background: orange;">1</th>
+					<th id="2" style="background: orange;">2</th>
+					<th id="3" style="background: orange;">3</th>
+					<th id="4" style="background: orange;">4</th>
+					<th id="5" style="background: orange;">5</th>
+					<th id="6" style="background: orange;">6</th>
+					<th id="7" style="background: orange;">7</th>
+					<th id="8" style="background: orange;">8</th>
+					<th id="9" style="background: orange;">9</th>
+					<th id="10" style="background: orange;">10</th>
+					<th id="11" style="background: orange;">11</th>
+					<th id="12" style="background: orange;">12</th>
+				</tr>
+				<tr>
+					<th id="r1" style="background: orange;">1</th>
+					<td id="5_0*0">1</td>
+					<td id="5_0*1">9</td>
+					<td id="5_0*2">9</td>
+					<td id="5_0*3">9</td>
+					<td id="5_0*4">9</td>
+					<td id="5_0*5">9</td>
+					<td id="5_0*6">9</td>
+					<td id="5_0*7">9</td>
+					<td id="5_0*8">9</td>
+					<td id="5_0*9">9</td>
+					<td id="5_0*10">9</td>
+					<td id="5_0*11">9</td>
+				</tr>
+				<tr>
+					<th id="r2" style="background: orange;">2</th>
+					<td id="5_1*0">10</td>
+					<td id="5_1*1">2</td>
+					<td id="5_1*2">10</td>
+					<td id="5_1*3">10</td>
+					<td id="5_1*4">10</td>
+					<td id="5_1*5">10</td>
+					<td id="5_1*6">10</td>
+					<td id="5_1*7">10</td>
+					<td id="5_1*8" style="background: white;">10</td>
+					<td id="5_1*9">10</td>
+					<td id="5_1*10">10</td>
+					<td id="5_1*11">10</td>
+				</tr>
+				<tr>
+					<th id="r3" style="background: orange;">3</th>
+					<td id="5_2*0">9</td>
+					<td id="5_2*1">9</td>
+					<td id="5_2*2">3</td>
+					<td id="5_2*3">9</td>
+					<td id="5_2*4" style="background: white;">9</td>
+					<td id="5_2*5">9</td>
+					<td id="5_2*6" style="background: white;">9</td>
+					<td id="5_2*7" style="background: white;">9</td>
+					<td id="5_2*8">9</td>
+					<td id="5_2*9">9</td>
+					<td id="5_2*10">9</td>
+					<td id="5_2*11">9</td>
+				</tr>
+				<tr>
+					<th id="r4" style="background: orange;">4</th>
+					<td id="5_3*0">10</td>
+					<td id="5_3*1">10</td>
+					<td id="5_3*2">10</td>
+					<td id="5_3*3">4</td>
+					<td id="5_3*4">10</td>
+					<td id="5_3*5">10</td>
+					<td id="5_3*6">10</td>
+					<td id="5_3*7" style="background: white;">10</td>
+					<td id="5_3*8" style="background: white;">10</td>
+					<td id="5_3*9">10</td>
+					<td id="5_3*10">10</td>
+					<td id="5_3*11" style="background: white;">10</td>
+				</tr>
+				<tr>
+					<th id="r5" style="background: orange;">5</th>
+					<td id="5_4*0">11</td>
+					<td id="5_4*1">11</td>
+					<td id="5_4*2" style="background: white;">11</td>
+					<td id="5_4*3">11</td>
+					<td id="5_4*4">5</td>
+					<td id="5_4*5">11</td>
+					<td id="5_4*6">11</td>
+					<td id="5_4*7">11</td>
+					<td id="5_4*8">11</td>
+					<td id="5_4*9">1</td>
+					<td id="5_4*10">11</td>
+					<td id="5_4*11">11</td>
+				</tr>
+				<tr>
+					<th id="r6" style="background: orange;">6</th>
+					<td id="5_5*0">12</td>
+					<td id="5_5*1">12</td>
+					<td id="5_5*2">12</td>
+					<td id="5_5*3">12</td>
+					<td id="5_5*4">12</td>
+					<td id="5_5*5">6</td>
+					<td id="5_5*6">12</td>
+					<td id="5_5*7">12</td>
+					<td id="5_5*8">12</td>
+					<td id="5_5*9">12</td>
+					<td id="5_5*10">12</td>
+					<td id="5_5*11">12</td>
+				</tr>
+				<tr>
+					<th id="r7" style="background: orange;">7</th>
+					<td id="5_6*0">11</td>
+					<td id="5_6*1">11</td>
+					<td id="5_6*2" style="background: white;">11</td>
+					<td id="5_6*3">11</td>
+					<td id="5_6*4">11</td>
+					<td id="5_6*5">11</td>
+					<td id="5_6*6">7</td>
+					<td id="5_6*7">11</td>
+					<td id="5_6*8">11</td>
+					<td id="5_6*9">11</td>
+					<td id="5_6*10">11</td>
+					<td id="5_6*11">11</td>
+				</tr>
+				<tr>
+					<th id="r8" style="background: orange;">8</th>
+					<td id="5_7*0">12</td>
+					<td id="5_7*1">12</td>
+					<td id="5_7*2" style="background: white;">12</td>
+					<td id="5_7*3" style="background: white;">12</td>
+					<td id="5_7*4">12</td>
+					<td id="5_7*5">12</td>
+					<td id="5_7*6">12</td>
+					<td id="5_7*7">8</td>
+					<td id="5_7*8">12</td>
+					<td id="5_7*9">12</td>
+					<td id="5_7*10">12</td>
+					<td id="5_7*11">12</td>
+				</tr>
+				<tr>
+					<th id="r9" style="background: orange;">9</th>
+					<td id="5_8*0">1</td>
+					<td id="5_8*1" style="background: white;">10</td>
+					<td id="5_8*2">3</td>
+					<td id="5_8*3" style="background: white;">10</td>
+					<td id="5_8*4">11</td>
+					<td id="5_8*5">12</td>
+					<td id="5_8*6">11</td>
+					<td id="5_8*7">12</td>
+					<td id="5_8*8">9</td>
+					<td id="5_8*9">10</td>
+					<td id="5_8*10">11</td>
+					<td id="5_8*11">12</td>
+				</tr>
+				<tr>
+					<th id="r10" style="background: orange;">10</th>
+					<td id="5_9*0">9</td>
+					<td id="5_9*1">2</td>
+					<td id="5_9*2">9</td>
+					<td id="5_9*3">4</td>
+					<td id="5_9*4">11</td>
+					<td id="5_9*5">12</td>
+					<td id="5_9*6">11</td>
+					<td id="5_9*7">12</td>
+					<td id="5_9*8">9</td>
+					<td id="5_9*9">10</td>
+					<td id="5_9*10">11</td>
+					<td id="5_9*11">12</td>
+				</tr>
+				<tr>
+					<th id="r11" style="background: orange;">11</th>
+					<td id="5_10*0">9</td>
+					<td id="5_10*1">10</td>
+					<td id="5_10*2">9</td>
+					<td id="5_10*3">10</td>
+					<td id="5_10*4">5</td>
+					<td id="5_10*5">12</td>
+					<td id="5_10*6">7</td>
+					<td id="5_10*7">12</td>
+					<td id="5_10*8">9</td>
+					<td id="5_10*9">10</td>
+					<td id="5_10*10">11</td>
+					<td id="5_10*11">12</td>
+				</tr>
+				<tr>
+					<th id="r12" style="background: orange;">12</th>
+					<td id="5_11*0">9</td>
+					<td id="5_11*1">10</td>
+					<td id="5_11*2">9</td>
+					<td id="5_11*3" style="background: white;">10</td>
+					<td id="5_11*4">11</td>
+					<td id="5_11*5">6</td>
+					<td id="5_11*6">11</td>
+					<td id="5_11*7">8</td>
+					<td id="5_11*8">9</td>
+					<td id="5_11*9">10</td>
+					<td id="5_11*10">11</td>
+					<td id="5_11*11">12</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="title_m hidden">5) Распределение интенсивности нагрузки по маршрутам</div>
+		<div class="hidden" id="n5">
+			<br><span class="descr">На основании матрицы <b>Y</b> и матрицы <b>R</b>.</span>
+			<br> ÿ = <b>∑y<sub>st</sub></b> или <b>0</b> (Если ребра нет)
+			<br> Ÿ:
+			<table>
+				<tr>
+					<th id="n" style="background: pink;">Ÿ</th>
+					<th id="1" style="background: pink;">1</th>
+					<th id="2" style="background: pink;">2</th>
+					<th id="3" style="background: pink;">3</th>
+					<th id="4" style="background: pink;">4</th>
+					<th id="5" style="background: pink;">5</th>
+					<th id="6" style="background: pink;">6</th>
+					<th id="7" style="background: pink;">7</th>
+					<th id="8" style="background: pink;">8</th>
+					<th id="9" style="background: pink;">9</th>
+					<th id="10" style="background: pink;">10</th>
+					<th id="11" style="background: pink;">11</th>
+					<th id="12" style="background: pink;">12</th>
+				</tr>
+				<tr>
+					<th id="r1" style="background: pink;">1</th>
+					<td id="f0*0">0</td>
+					<td id="f0*1">0</td>
+					<td id="f0*2">0</td>
+					<td id="f0*3">0</td>
+					<td id="f0*4">0</td>
+					<td id="f0*5">0</td>
+					<td id="f0*6">0</td>
+					<td id="f0*7">0</td>
+					<td id="f0*8">0</td>
+					<td id="f0*9">0</td>
+					<td id="f0*10">0</td>
+					<td id="f0*11">0</td>
+				</tr>
+				<tr>
+					<th id="r2" style="background: pink;">2</th>
+					<td id="f1*0">0</td>
+					<td id="f1*1">0</td>
+					<td id="f1*2">0</td>
+					<td id="f1*3">0</td>
+					<td id="f1*4">0</td>
+					<td id="f1*5">0</td>
+					<td id="f1*6">0</td>
+					<td id="f1*7">0</td>
+					<td id="f1*8">0</td>
+					<td id="f1*9">0</td>
+					<td id="f1*10">0</td>
+					<td id="f1*11">0</td>
+				</tr>
+				<tr>
+					<th id="r3" style="background: pink;">3</th>
+					<td id="f2*0">0</td>
+					<td id="f2*1">0</td>
+					<td id="f2*2">0</td>
+					<td id="f2*3">0</td>
+					<td id="f2*4">0</td>
+					<td id="f2*5">0</td>
+					<td id="f2*6">0</td>
+					<td id="f2*7">0</td>
+					<td id="f2*8">0</td>
+					<td id="f2*9">0</td>
+					<td id="f2*10">0</td>
+					<td id="f2*11">0</td>
+				</tr>
+				<tr>
+					<th id="r4" style="background: pink;">4</th>
+					<td id="f3*0">0</td>
+					<td id="f3*1">0</td>
+					<td id="f3*2">0</td>
+					<td id="f3*3">0</td>
+					<td id="f3*4">0</td>
+					<td id="f3*5">0</td>
+					<td id="f3*6">0</td>
+					<td id="f3*7">0</td>
+					<td id="f3*8">0</td>
+					<td id="f3*9">0</td>
+					<td id="f3*10">0</td>
+					<td id="f3*11">0</td>
+				</tr>
+				<tr>
+					<th id="r5" style="background: pink;">5</th>
+					<td id="f4*0">0</td>
+					<td id="f4*1">0</td>
+					<td id="f4*2">0</td>
+					<td id="f4*3">0</td>
+					<td id="f4*4">0</td>
+					<td id="f4*5">0</td>
+					<td id="f4*6">0</td>
+					<td id="f4*7">0</td>
+					<td id="f4*8">0</td>
+					<td id="f4*9">0</td>
+					<td id="f4*10">0</td>
+					<td id="f4*11">0</td>
+				</tr>
+				<tr>
+					<th id="r6" style="background: pink;">6</th>
+					<td id="f5*0">0</td>
+					<td id="f5*1">0</td>
+					<td id="f5*2">0</td>
+					<td id="f5*3">0</td>
+					<td id="f5*4">0</td>
+					<td id="f5*5">0</td>
+					<td id="f5*6">0</td>
+					<td id="f5*7">0</td>
+					<td id="f5*8">0</td>
+					<td id="f5*9">0</td>
+					<td id="f5*10">0</td>
+					<td id="f5*11">0</td>
+				</tr>
+				<tr>
+					<th id="r7" style="background: pink;">7</th>
+					<td id="f6*0">0</td>
+					<td id="f6*1">0</td>
+					<td id="f6*2">0</td>
+					<td id="f6*3">0</td>
+					<td id="f6*4">0</td>
+					<td id="f6*5">0</td>
+					<td id="f6*6">0</td>
+					<td id="f6*7">0</td>
+					<td id="f6*8">0</td>
+					<td id="f6*9">0</td>
+					<td id="f6*10">0</td>
+					<td id="f6*11">0</td>
+				</tr>
+				<tr>
+					<th id="r8" style="background: pink;">8</th>
+					<td id="f7*0">0</td>
+					<td id="f7*1">0</td>
+					<td id="f7*2">0</td>
+					<td id="f7*3">0</td>
+					<td id="f7*4">0</td>
+					<td id="f7*5">0</td>
+					<td id="f7*6">0</td>
+					<td id="f7*7">0</td>
+					<td id="f7*8">0</td>
+					<td id="f7*9">0</td>
+					<td id="f7*10">0</td>
+					<td id="f7*11">0</td>
+				</tr>
+				<tr>
+					<th id="r9" style="background: pink;">9</th>
+					<td id="f8*0">0</td>
+					<td id="f8*1">0</td>
+					<td id="f8*2">0</td>
+					<td id="f8*3">0</td>
+					<td id="f8*4">0</td>
+					<td id="f8*5">0</td>
+					<td id="f8*6">0</td>
+					<td id="f8*7">0</td>
+					<td id="f8*8">0</td>
+					<td id="f8*9">0</td>
+					<td id="f8*10">0</td>
+					<td id="f8*11">0</td>
+				</tr>
+				<tr>
+					<th id="r10" style="background: pink;">10</th>
+					<td id="f9*0">0</td>
+					<td id="f9*1">0</td>
+					<td id="f9*2">0</td>
+					<td id="f9*3">0</td>
+					<td id="f9*4">0</td>
+					<td id="f9*5">0</td>
+					<td id="f9*6">0</td>
+					<td id="f9*7">0</td>
+					<td id="f9*8">0</td>
+					<td id="f9*9">0</td>
+					<td id="f9*10">0</td>
+					<td id="f9*11">0</td>
+				</tr>
+				<tr>
+					<th id="r11" style="background: pink;">11</th>
+					<td id="f10*0">0</td>
+					<td id="f10*1">0</td>
+					<td id="f10*2">0</td>
+					<td id="f10*3">0</td>
+					<td id="f10*4">0</td>
+					<td id="f10*5">0</td>
+					<td id="f10*6">0</td>
+					<td id="f10*7">0</td>
+					<td id="f10*8">0</td>
+					<td id="f10*9">0</td>
+					<td id="f10*10">0</td>
+					<td id="f10*11">0</td>
+				</tr>
+				<tr>
+					<th id="r12" style="background: pink;">12</th>
+					<td id="f11*0">0</td>
+					<td id="f11*1">0</td>
+					<td id="f11*2">0</td>
+					<td id="f11*3">0</td>
+					<td id="f11*4">0</td>
+					<td id="f11*5">0</td>
+					<td id="f11*6">0</td>
+					<td id="f11*7">0</td>
+					<td id="f11*8">0</td>
+					<td id="f11*9">0</td>
+					<td id="f11*10">0</td>
+					<td id="f11*11">0</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="title_m hidden">6) Расчет числа потоков</div>
+		<div class="hidden" id="n6">
+			<br><span class="descr">На основании матрицы <b>Ÿ</b> и норме QoS (<b>0.02</b>).</span>
+			<br><br> С помощью 1ой формулы Эрланга:
+			<div class="eqs">
+				<img src="./img/fe.png" alt="fe">
+			</div>
+			<span class="descr">p<sub>0</sub> = QoS = 0.02, y = ÿ<sub>ij</sub>.</span>
+			<br> Выразим <b>v</b>.
+			<br>
+			<br> v<sub>ij</sub> = <b>v(ÿ<sub>ij</sub>, p<sub>0</sub>)</b> или <b>0</b> (Если ребра нет)
+			<br> V:
+			<table>
+				<tr>
+					<th id="n" style="background: khaki;">V</th>
+					<th id="1" style="background: khaki;">1</th>
+					<th id="2" style="background: khaki;">2</th>
+					<th id="3" style="background: khaki;">3</th>
+					<th id="4" style="background: khaki;">4</th>
+					<th id="5" style="background: khaki;">5</th>
+					<th id="6" style="background: khaki;">6</th>
+					<th id="7" style="background: khaki;">7</th>
+					<th id="8" style="background: khaki;">8</th>
+					<th id="9" style="background: khaki;">9</th>
+					<th id="10" style="background: khaki;">10</th>
+					<th id="11" style="background: khaki;">11</th>
+					<th id="12" style="background: khaki;">12</th>
+				</tr>
+				<tr>
+					<th id="r1" style="background: khaki;">1</th>
+					<td id="n6_0*0">0</td>
+					<td id="n6_0*1">0</td>
+					<td id="n6_0*2">0</td>
+					<td id="n6_0*3">0</td>
+					<td id="n6_0*4">0</td>
+					<td id="n6_0*5">0</td>
+					<td id="n6_0*6">0</td>
+					<td id="n6_0*7">0</td>
+					<td id="n6_0*8">0</td>
+					<td id="n6_0*9">0</td>
+					<td id="n6_0*10">0</td>
+					<td id="n6_0*11">0</td>
+				</tr>
+				<tr>
+					<th id="r2" style="background: khaki;">2</th>
+					<td id="n6_1*0">0</td>
+					<td id="n6_1*1">0</td>
+					<td id="n6_1*2">0</td>
+					<td id="n6_1*3">0</td>
+					<td id="n6_1*4">0</td>
+					<td id="n6_1*5">0</td>
+					<td id="n6_1*6">0</td>
+					<td id="n6_1*7">0</td>
+					<td id="n6_1*8">0</td>
+					<td id="n6_1*9">0</td>
+					<td id="n6_1*10">0</td>
+					<td id="n6_1*11">0</td>
+				</tr>
+				<tr>
+					<th id="r3" style="background: khaki;">3</th>
+					<td id="n6_2*0">0</td>
+					<td id="n6_2*1">0</td>
+					<td id="n6_2*2">0</td>
+					<td id="n6_2*3">0</td>
+					<td id="n6_2*4">0</td>
+					<td id="n6_2*5">0</td>
+					<td id="n6_2*6">0</td>
+					<td id="n6_2*7">0</td>
+					<td id="n6_2*8">0</td>
+					<td id="n6_2*9">0</td>
+					<td id="n6_2*10">0</td>
+					<td id="n6_2*11">0</td>
+				</tr>
+				<tr>
+					<th id="r4" style="background: khaki;">4</th>
+					<td id="n6_3*0">0</td>
+					<td id="n6_3*1">0</td>
+					<td id="n6_3*2">0</td>
+					<td id="n6_3*3">0</td>
+					<td id="n6_3*4">0</td>
+					<td id="n6_3*5">0</td>
+					<td id="n6_3*6">0</td>
+					<td id="n6_3*7">0</td>
+					<td id="n6_3*8">0</td>
+					<td id="n6_3*9">0</td>
+					<td id="n6_3*10">0</td>
+					<td id="n6_3*11">0</td>
+				</tr>
+				<tr>
+					<th id="r5" style="background: khaki;">5</th>
+					<td id="n6_4*0">0</td>
+					<td id="n6_4*1">0</td>
+					<td id="n6_4*2">0</td>
+					<td id="n6_4*3">0</td>
+					<td id="n6_4*4">0</td>
+					<td id="n6_4*5">0</td>
+					<td id="n6_4*6">0</td>
+					<td id="n6_4*7">0</td>
+					<td id="n6_4*8">0</td>
+					<td id="n6_4*9">0</td>
+					<td id="n6_4*10">0</td>
+					<td id="n6_4*11">0</td>
+				</tr>
+				<tr>
+					<th id="r6" style="background: khaki;">6</th>
+					<td id="n6_5*0">0</td>
+					<td id="n6_5*1">0</td>
+					<td id="n6_5*2">0</td>
+					<td id="n6_5*3">0</td>
+					<td id="n6_5*4">0</td>
+					<td id="n6_5*5">0</td>
+					<td id="n6_5*6">0</td>
+					<td id="n6_5*7">0</td>
+					<td id="n6_5*8">0</td>
+					<td id="n6_5*9">0</td>
+					<td id="n6_5*10">0</td>
+					<td id="n6_5*11">0</td>
+				</tr>
+				<tr>
+					<th id="r7" style="background: khaki;">7</th>
+					<td id="n6_6*0">0</td>
+					<td id="n6_6*1">0</td>
+					<td id="n6_6*2">0</td>
+					<td id="n6_6*3">0</td>
+					<td id="n6_6*4">0</td>
+					<td id="n6_6*5">0</td>
+					<td id="n6_6*6">0</td>
+					<td id="n6_6*7">0</td>
+					<td id="n6_6*8">0</td>
+					<td id="n6_6*9">0</td>
+					<td id="n6_6*10">0</td>
+					<td id="n6_6*11">0</td>
+				</tr>
+				<tr>
+					<th id="r8" style="background: khaki;">8</th>
+					<td id="n6_7*0">0</td>
+					<td id="n6_7*1">0</td>
+					<td id="n6_7*2">0</td>
+					<td id="n6_7*3">0</td>
+					<td id="n6_7*4">0</td>
+					<td id="n6_7*5">0</td>
+					<td id="n6_7*6">0</td>
+					<td id="n6_7*7">0</td>
+					<td id="n6_7*8">0</td>
+					<td id="n6_7*9">0</td>
+					<td id="n6_7*10">0</td>
+					<td id="n6_7*11">0</td>
+				</tr>
+				<tr>
+					<th id="r9" style="background: khaki;">9</th>
+					<td id="n6_8*0">0</td>
+					<td id="n6_8*1">0</td>
+					<td id="n6_8*2">0</td>
+					<td id="n6_8*3">0</td>
+					<td id="n6_8*4">0</td>
+					<td id="n6_8*5">0</td>
+					<td id="n6_8*6">0</td>
+					<td id="n6_8*7">0</td>
+					<td id="n6_8*8">0</td>
+					<td id="n6_8*9">0</td>
+					<td id="n6_8*10">0</td>
+					<td id="n6_8*11">0</td>
+				</tr>
+				<tr>
+					<th id="r10" style="background: khaki;">10</th>
+					<td id="n6_9*0">0</td>
+					<td id="n6_9*1">0</td>
+					<td id="n6_9*2">0</td>
+					<td id="n6_9*3">0</td>
+					<td id="n6_9*4">0</td>
+					<td id="n6_9*5">0</td>
+					<td id="n6_9*6">0</td>
+					<td id="n6_9*7">0</td>
+					<td id="n6_9*8">0</td>
+					<td id="n6_9*9">0</td>
+					<td id="n6_9*10">0</td>
+					<td id="n6_9*11">0</td>
+				</tr>
+				<tr>
+					<th id="r11" style="background: khaki;">11</th>
+					<td id="n6_10*0">0</td>
+					<td id="n6_10*1">0</td>
+					<td id="n6_10*2">0</td>
+					<td id="n6_10*3">0</td>
+					<td id="n6_10*4">0</td>
+					<td id="n6_10*5">0</td>
+					<td id="n6_10*6">0</td>
+					<td id="n6_10*7">0</td>
+					<td id="n6_10*8">0</td>
+					<td id="n6_10*9">0</td>
+					<td id="n6_10*10">0</td>
+					<td id="n6_10*11">0</td>
+				</tr>
+				<tr>
+					<th id="r12" style="background: khaki;">12</th>
+					<td id="n6_11*0">0</td>
+					<td id="n6_11*1">0</td>
+					<td id="n6_11*2">0</td>
+					<td id="n6_11*3">0</td>
+					<td id="n6_11*4">0</td>
+					<td id="n6_11*5">0</td>
+					<td id="n6_11*6">0</td>
+					<td id="n6_11*7">0</td>
+					<td id="n6_11*8">0</td>
+					<td id="n6_11*9">0</td>
+					<td id="n6_11*10">0</td>
+					<td id="n6_11*11">0</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="title_m hidden">7) Расчет интенсивности трафика</div>
+		<div class="hidden" id="n7">
+			<br><span class="descr">На основании матрицы <b>V</b> и a<sub>0</sub> = <b>85.6 кбит/c</b>.</span>
+			<br> a<sub>ij</sub> = <b>v<sub>ij</sub> ⋅ a<sub>0</sub></b> или <b>0</b> кбит/с (Если ребра нет)
+			<br> A:
+			<table>
+				<tr>
+					<th id="n" style="background: lightgreen;">A</th>
+					<th id="1" style="background: lightgreen;">1</th>
+					<th id="2" style="background: lightgreen;">2</th>
+					<th id="3" style="background: lightgreen;">3</th>
+					<th id="4" style="background: lightgreen;">4</th>
+					<th id="5" style="background: lightgreen;">5</th>
+					<th id="6" style="background: lightgreen;">6</th>
+					<th id="7" style="background: lightgreen;">7</th>
+					<th id="8" style="background: lightgreen;">8</th>
+					<th id="9" style="background: lightgreen;">9</th>
+					<th id="10" style="background: lightgreen;">10</th>
+					<th id="11" style="background: lightgreen;">11</th>
+					<th id="12" style="background: lightgreen;">12</th>
+				</tr>
+				<tr>
+					<th id="r1" style="background: lightgreen;">1</th>
+					<td id="n7_0*0">0</td>
+					<td id="n7_0*1">0</td>
+					<td id="n7_0*2">0</td>
+					<td id="n7_0*3">0</td>
+					<td id="n7_0*4">0</td>
+					<td id="n7_0*5">0</td>
+					<td id="n7_0*6">0</td>
+					<td id="n7_0*7">0</td>
+					<td id="n7_0*8">0</td>
+					<td id="n7_0*9">0</td>
+					<td id="n7_0*10">0</td>
+					<td id="n7_0*11">0</td>
+				</tr>
+				<tr>
+					<th id="r2" style="background: lightgreen;">2</th>
+					<td id="n7_1*0">0</td>
+					<td id="n7_1*1">0</td>
+					<td id="n7_1*2">0</td>
+					<td id="n7_1*3">0</td>
+					<td id="n7_1*4">0</td>
+					<td id="n7_1*5">0</td>
+					<td id="n7_1*6">0</td>
+					<td id="n7_1*7">0</td>
+					<td id="n7_1*8">0</td>
+					<td id="n7_1*9">0</td>
+					<td id="n7_1*10">0</td>
+					<td id="n7_1*11">0</td>
+				</tr>
+				<tr>
+					<th id="r3" style="background: lightgreen;">3</th>
+					<td id="n7_2*0">0</td>
+					<td id="n7_2*1">0</td>
+					<td id="n7_2*2">0</td>
+					<td id="n7_2*3">0</td>
+					<td id="n7_2*4">0</td>
+					<td id="n7_2*5">0</td>
+					<td id="n7_2*6">0</td>
+					<td id="n7_2*7">0</td>
+					<td id="n7_2*8">0</td>
+					<td id="n7_2*9">0</td>
+					<td id="n7_2*10">0</td>
+					<td id="n7_2*11">0</td>
+				</tr>
+				<tr>
+					<th id="r4" style="background: lightgreen;">4</th>
+					<td id="n7_3*0">0</td>
+					<td id="n7_3*1">0</td>
+					<td id="n7_3*2">0</td>
+					<td id="n7_3*3">0</td>
+					<td id="n7_3*4">0</td>
+					<td id="n7_3*5">0</td>
+					<td id="n7_3*6">0</td>
+					<td id="n7_3*7">0</td>
+					<td id="n7_3*8">0</td>
+					<td id="n7_3*9">0</td>
+					<td id="n7_3*10">0</td>
+					<td id="n7_3*11">0</td>
+				</tr>
+				<tr>
+					<th id="r5" style="background: lightgreen;">5</th>
+					<td id="n7_4*0">0</td>
+					<td id="n7_4*1">0</td>
+					<td id="n7_4*2">0</td>
+					<td id="n7_4*3">0</td>
+					<td id="n7_4*4">0</td>
+					<td id="n7_4*5">0</td>
+					<td id="n7_4*6">0</td>
+					<td id="n7_4*7">0</td>
+					<td id="n7_4*8">0</td>
+					<td id="n7_4*9">0</td>
+					<td id="n7_4*10">0</td>
+					<td id="n7_4*11">0</td>
+				</tr>
+				<tr>
+					<th id="r6" style="background: lightgreen;">6</th>
+					<td id="n7_5*0">0</td>
+					<td id="n7_5*1">0</td>
+					<td id="n7_5*2">0</td>
+					<td id="n7_5*3">0</td>
+					<td id="n7_5*4">0</td>
+					<td id="n7_5*5">0</td>
+					<td id="n7_5*6">0</td>
+					<td id="n7_5*7">0</td>
+					<td id="n7_5*8">0</td>
+					<td id="n7_5*9">0</td>
+					<td id="n7_5*10">0</td>
+					<td id="n7_5*11">0</td>
+				</tr>
+				<tr>
+					<th id="r7" style="background: lightgreen;">7</th>
+					<td id="n7_6*0">0</td>
+					<td id="n7_6*1">0</td>
+					<td id="n7_6*2">0</td>
+					<td id="n7_6*3">0</td>
+					<td id="n7_6*4">0</td>
+					<td id="n7_6*5">0</td>
+					<td id="n7_6*6">0</td>
+					<td id="n7_6*7">0</td>
+					<td id="n7_6*8">0</td>
+					<td id="n7_6*9">0</td>
+					<td id="n7_6*10">0</td>
+					<td id="n7_6*11">0</td>
+				</tr>
+				<tr>
+					<th id="r8" style="background: lightgreen;">8</th>
+					<td id="n7_7*0">0</td>
+					<td id="n7_7*1">0</td>
+					<td id="n7_7*2">0</td>
+					<td id="n7_7*3">0</td>
+					<td id="n7_7*4">0</td>
+					<td id="n7_7*5">0</td>
+					<td id="n7_7*6">0</td>
+					<td id="n7_7*7">0</td>
+					<td id="n7_7*8">0</td>
+					<td id="n7_7*9">0</td>
+					<td id="n7_7*10">0</td>
+					<td id="n7_7*11">0</td>
+				</tr>
+				<tr>
+					<th id="r9" style="background: lightgreen;">9</th>
+					<td id="n7_8*0">0</td>
+					<td id="n7_8*1">0</td>
+					<td id="n7_8*2">0</td>
+					<td id="n7_8*3">0</td>
+					<td id="n7_8*4">0</td>
+					<td id="n7_8*5">0</td>
+					<td id="n7_8*6">0</td>
+					<td id="n7_8*7">0</td>
+					<td id="n7_8*8">0</td>
+					<td id="n7_8*9">0</td>
+					<td id="n7_8*10">0</td>
+					<td id="n7_8*11">0</td>
+				</tr>
+				<tr>
+					<th id="r10" style="background: lightgreen;">10</th>
+					<td id="n7_9*0">0</td>
+					<td id="n7_9*1">0</td>
+					<td id="n7_9*2">0</td>
+					<td id="n7_9*3">0</td>
+					<td id="n7_9*4">0</td>
+					<td id="n7_9*5">0</td>
+					<td id="n7_9*6">0</td>
+					<td id="n7_9*7">0</td>
+					<td id="n7_9*8">0</td>
+					<td id="n7_9*9">0</td>
+					<td id="n7_9*10">0</td>
+					<td id="n7_9*11">0</td>
+				</tr>
+				<tr>
+					<th id="r11" style="background: lightgreen;">11</th>
+					<td id="n7_10*0">0</td>
+					<td id="n7_10*1">0</td>
+					<td id="n7_10*2">0</td>
+					<td id="n7_10*3">0</td>
+					<td id="n7_10*4">0</td>
+					<td id="n7_10*5">0</td>
+					<td id="n7_10*6">0</td>
+					<td id="n7_10*7">0</td>
+					<td id="n7_10*8">0</td>
+					<td id="n7_10*9">0</td>
+					<td id="n7_10*10">0</td>
+					<td id="n7_10*11">0</td>
+				</tr>
+				<tr>
+					<th id="r12" style="background: lightgreen;">12</th>
+					<td id="n7_11*0">0</td>
+					<td id="n7_11*1">0</td>
+					<td id="n7_11*2">0</td>
+					<td id="n7_11*3">0</td>
+					<td id="n7_11*4">0</td>
+					<td id="n7_11*5">0</td>
+					<td id="n7_11*6">0</td>
+					<td id="n7_11*7">0</td>
+					<td id="n7_11*8">0</td>
+					<td id="n7_11*9">0</td>
+					<td id="n7_11*10">0</td>
+					<td id="n7_11*11">0</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="title_m hidden">8) Расчет пропускных способностей</div>
+		<div class="hidden" id="n8">
+			<br><span class="descr">На основании матрицы <b>A</b> и треб. задержки (<b>50мc</b>).</span>
+			<div class="eqs">
+				<img src="./img./t0.png" alt="t0">
+			</div>
+			<span class="descr">T<sub>0</sub> = 50мс = 0.05с</span>
+			<br><br> b<sub>ij</sub> = <b>a<sub>ij</sub> + L/T<sub>0</sub></b> или <b>0</b> (Если ребра нет)
+			<br><span class="descr">L = 200байт = 1,6кбит</span>
+			<br> B:
+			<table>
+				<tr>
+					<th id="n" style="background: violet;">B</th>
+					<th id="1" style="background: violet;">1</th>
+					<th id="2" style="background: violet;">2</th>
+					<th id="3" style="background: violet;">3</th>
+					<th id="4" style="background: violet;">4</th>
+					<th id="5" style="background: violet;">5</th>
+					<th id="6" style="background: violet;">6</th>
+					<th id="7" style="background: violet;">7</th>
+					<th id="8" style="background: violet;">8</th>
+					<th id="9" style="background: violet;">9</th>
+					<th id="10" style="background: violet;">10</th>
+					<th id="11" style="background: violet;">11</th>
+					<th id="12" style="background: violet;">12</th>
+				</tr>
+				<tr>
+					<th id="r1" style="background: violet;">1</th>
+					<td id="n8_0*0">0</td>
+					<td id="n8_0*1">0</td>
+					<td id="n8_0*2">0</td>
+					<td id="n8_0*3">0</td>
+					<td id="n8_0*4">0</td>
+					<td id="n8_0*5">0</td>
+					<td id="n8_0*6">0</td>
+					<td id="n8_0*7">0</td>
+					<td id="n8_0*8">0</td>
+					<td id="n8_0*9">0</td>
+					<td id="n8_0*10">0</td>
+					<td id="n8_0*11">0</td>
+				</tr>
+				<tr>
+					<th id="r2" style="background: violet;">2</th>
+					<td id="n8_1*0">0</td>
+					<td id="n8_1*1">0</td>
+					<td id="n8_1*2">0</td>
+					<td id="n8_1*3">0</td>
+					<td id="n8_1*4">0</td>
+					<td id="n8_1*5">0</td>
+					<td id="n8_1*6">0</td>
+					<td id="n8_1*7">0</td>
+					<td id="n8_1*8">0</td>
+					<td id="n8_1*9">0</td>
+					<td id="n8_1*10">0</td>
+					<td id="n8_1*11">0</td>
+				</tr>
+				<tr>
+					<th id="r3" style="background: violet;">3</th>
+					<td id="n8_2*0">0</td>
+					<td id="n8_2*1">0</td>
+					<td id="n8_2*2">0</td>
+					<td id="n8_2*3">0</td>
+					<td id="n8_2*4">0</td>
+					<td id="n8_2*5">0</td>
+					<td id="n8_2*6">0</td>
+					<td id="n8_2*7">0</td>
+					<td id="n8_2*8">0</td>
+					<td id="n8_2*9">0</td>
+					<td id="n8_2*10">0</td>
+					<td id="n8_2*11">0</td>
+				</tr>
+				<tr>
+					<th id="r4" style="background: violet;">4</th>
+					<td id="n8_3*0">0</td>
+					<td id="n8_3*1">0</td>
+					<td id="n8_3*2">0</td>
+					<td id="n8_3*3">0</td>
+					<td id="n8_3*4">0</td>
+					<td id="n8_3*5">0</td>
+					<td id="n8_3*6">0</td>
+					<td id="n8_3*7">0</td>
+					<td id="n8_3*8">0</td>
+					<td id="n8_3*9">0</td>
+					<td id="n8_3*10">0</td>
+					<td id="n8_3*11">0</td>
+				</tr>
+				<tr>
+					<th id="r5" style="background: violet;">5</th>
+					<td id="n8_4*0">0</td>
+					<td id="n8_4*1">0</td>
+					<td id="n8_4*2">0</td>
+					<td id="n8_4*3">0</td>
+					<td id="n8_4*4">0</td>
+					<td id="n8_4*5">0</td>
+					<td id="n8_4*6">0</td>
+					<td id="n8_4*7">0</td>
+					<td id="n8_4*8">0</td>
+					<td id="n8_4*9">0</td>
+					<td id="n8_4*10">0</td>
+					<td id="n8_4*11">0</td>
+				</tr>
+				<tr>
+					<th id="r6" style="background: violet;">6</th>
+					<td id="n8_5*0">0</td>
+					<td id="n8_5*1">0</td>
+					<td id="n8_5*2">0</td>
+					<td id="n8_5*3">0</td>
+					<td id="n8_5*4">0</td>
+					<td id="n8_5*5">0</td>
+					<td id="n8_5*6">0</td>
+					<td id="n8_5*7">0</td>
+					<td id="n8_5*8">0</td>
+					<td id="n8_5*9">0</td>
+					<td id="n8_5*10">0</td>
+					<td id="n8_5*11">0</td>
+				</tr>
+				<tr>
+					<th id="r7" style="background: violet;">7</th>
+					<td id="n8_6*0">0</td>
+					<td id="n8_6*1">0</td>
+					<td id="n8_6*2">0</td>
+					<td id="n8_6*3">0</td>
+					<td id="n8_6*4">0</td>
+					<td id="n8_6*5">0</td>
+					<td id="n8_6*6">0</td>
+					<td id="n8_6*7">0</td>
+					<td id="n8_6*8">0</td>
+					<td id="n8_6*9">0</td>
+					<td id="n8_6*10">0</td>
+					<td id="n8_6*11">0</td>
+				</tr>
+				<tr>
+					<th id="r8" style="background: violet;">8</th>
+					<td id="n8_7*0">0</td>
+					<td id="n8_7*1">0</td>
+					<td id="n8_7*2">0</td>
+					<td id="n8_7*3">0</td>
+					<td id="n8_7*4">0</td>
+					<td id="n8_7*5">0</td>
+					<td id="n8_7*6">0</td>
+					<td id="n8_7*7">0</td>
+					<td id="n8_7*8">0</td>
+					<td id="n8_7*9">0</td>
+					<td id="n8_7*10">0</td>
+					<td id="n8_7*11">0</td>
+				</tr>
+				<tr>
+					<th id="r9" style="background: violet;">9</th>
+					<td id="n8_8*0">0</td>
+					<td id="n8_8*1">0</td>
+					<td id="n8_8*2">0</td>
+					<td id="n8_8*3">0</td>
+					<td id="n8_8*4">0</td>
+					<td id="n8_8*5">0</td>
+					<td id="n8_8*6">0</td>
+					<td id="n8_8*7">0</td>
+					<td id="n8_8*8">0</td>
+					<td id="n8_8*9">0</td>
+					<td id="n8_8*10">0</td>
+					<td id="n8_8*11">0</td>
+				</tr>
+				<tr>
+					<th id="r10" style="background: violet;">10</th>
+					<td id="n8_9*0">0</td>
+					<td id="n8_9*1">0</td>
+					<td id="n8_9*2">0</td>
+					<td id="n8_9*3">0</td>
+					<td id="n8_9*4">0</td>
+					<td id="n8_9*5">0</td>
+					<td id="n8_9*6">0</td>
+					<td id="n8_9*7">0</td>
+					<td id="n8_9*8">0</td>
+					<td id="n8_9*9">0</td>
+					<td id="n8_9*10">0</td>
+					<td id="n8_9*11">0</td>
+				</tr>
+				<tr>
+					<th id="r11" style="background: violet;">11</th>
+					<td id="n8_10*0">0</td>
+					<td id="n8_10*1">0</td>
+					<td id="n8_10*2">0</td>
+					<td id="n8_10*3">0</td>
+					<td id="n8_10*4">0</td>
+					<td id="n8_10*5">0</td>
+					<td id="n8_10*6">0</td>
+					<td id="n8_10*7">0</td>
+					<td id="n8_10*8">0</td>
+					<td id="n8_10*9">0</td>
+					<td id="n8_10*10">0</td>
+					<td id="n8_10*11">0</td>
+				</tr>
+				<tr>
+					<th id="r12" style="background: violet;">12</th>
+					<td id="n8_11*0">0</td>
+					<td id="n8_11*1">0</td>
+					<td id="n8_11*2">0</td>
+					<td id="n8_11*3">0</td>
+					<td id="n8_11*4">0</td>
+					<td id="n8_11*5">0</td>
+					<td id="n8_11*6">0</td>
+					<td id="n8_11*7">0</td>
+					<td id="n8_11*8">0</td>
+					<td id="n8_11*9">0</td>
+					<td id="n8_11*10">0</td>
+					<td id="n8_11*11">0</td>
+				</tr>
+			</table>
+		</div>
+
+		<img class="no hidden" src="./img/mops.jpg" alt="mops">
+
+	</div>
+</body>
+
+</html>
