@@ -127,7 +127,7 @@ window.addEventListener('load', () => {
                         var r = erlang(lambda, i)
                         result = i;
 
-                        if (Math.abs(p - r) <= error)
+                        if (Math.abs(p) >= r)
                             break
                     }
 
