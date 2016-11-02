@@ -112,7 +112,7 @@ window.addEventListener('load', function () {
                     for (var i = 1; i < 1000; i++) {
                         var r = erlang(lambda, i);
                         result = i;
-                        if (Math.abs(p - r) <= error)
+                        if (Math.abs(p) >= r)
                             break;
                     }
                     document.getElementById("n6_" + y + "*" + x).innerText = result.toString();
