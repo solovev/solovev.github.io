@@ -1,10 +1,19 @@
 window.addEventListener('load', () => {
     var goB = document.getElementById('go');
     var dataT = document.getElementById('data') as HTMLInputElement;
+    var snameT = document.getElementById('sname') as HTMLInputElement;
+    var sgroupT = document.getElementById('sgroup') as HTMLInputElement;
+
+    var inputZone = document.getElementById('z');
     goB.onclick = () => {
         if (dataT.value == "") {
             dataT.value = "1709, 7497, 5753, 6065, 8048, 2404, 3425, 1700";
         }
+
+        document.getElementById('g').innerText = sgroupT.value == "" ? 'ИКПИ-53' : sgroupT.value;
+        document.getElementById('n').innerText = snameT.value == "" ? 'Соловьев С.М.' : snameT.value;
+        document.getElementById('dataLabel').innerText = dataT.value;
+
         var msg = document.getElementById('dsc');
         msg.style.color = 'red';
         msg.style.fontSize = '1rem';
@@ -35,6 +44,8 @@ window.addEventListener('load', () => {
         msg.style.color = 'black';
         msg.style.fontSize = '0.7rem';
         msg.innerText = 'SeemsGood.';
+
+        inputZone.className = 'hidden';
 
         // 1
         var K = [0, 0, 0, 0, 0, 0, 0, 0];

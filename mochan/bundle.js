@@ -1,10 +1,16 @@
 window.addEventListener('load', function () {
     var goB = document.getElementById('go');
     var dataT = document.getElementById('data');
+    var snameT = document.getElementById('sname');
+    var sgroupT = document.getElementById('sgroup');
+    var inputZone = document.getElementById('z');
     goB.onclick = function () {
         if (dataT.value == "") {
             dataT.value = "1709, 7497, 5753, 6065, 8048, 2404, 3425, 1700";
         }
+        document.getElementById('g').innerText = sgroupT.value == "" ? 'ИКПИ-53' : sgroupT.value;
+        document.getElementById('n').innerText = snameT.value == "" ? 'Соловьев С.М.' : snameT.value;
+        document.getElementById('dataLabel').innerText = dataT.value;
         var msg = document.getElementById('dsc');
         msg.style.color = 'red';
         msg.style.fontSize = '1rem';
@@ -32,6 +38,7 @@ window.addEventListener('load', function () {
         msg.style.color = 'black';
         msg.style.fontSize = '0.7rem';
         msg.innerText = 'SeemsGood.';
+        inputZone.className = 'hidden';
         var K = [0, 0, 0, 0, 0, 0, 0, 0];
         (function () {
             document.getElementById('nSum').innerText = sum.toString();

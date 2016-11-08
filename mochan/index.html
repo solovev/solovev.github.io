@@ -123,20 +123,25 @@
 
 <body>
 	<div class="wrapper">
-		<span class="title">Количество абонентов на узлах</span>
-		<div class="data-wrapper">
-			<input id="data" type="text" placeholder="0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000"></input>
-			<input type="button" id="go" value="Газуй"></input>
+		<h2 class="hidden">Курсовая работа по теме:</h2>
+		<h2 class="hidden">Расчет прoпускной способности линий связи</h2>
+		<h3 class="hidden" id="n">Соловьев Сергей</h3>
+		<h4 class="hidden" id="g">ИКПИ-53</h4>
+		<span class="title hidden">Количество абонентов на узлах (Исходные данные):</span>
+		<span id="dataLabel" class="title hidden">0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000</span>
+		<div id="z" class="data-wrapper">
+			<span class="title">Имя: </span><input id="sname" type="text" placeholder="Соловьев С.М."></input><br>
+			<span class="title">Группа: </span><input id="sgroup" type="text" placeholder="ИКПИ-53"></input><br>
+			<span class="title">Кол-во абонентов на узлах: </span>
+			<input id="data" type="text" placeholder="1709, 7497, 5753, 6065, 8048, 2404, 3425, 1700"></input>
+			<input type="button" id="go" value="Газуй"></input><br>
+			<span class="descr" id="dsc"></span>
 		</div>
-		<span class="descr" id="dsc">Указывается через запятую.</span>
-		<span class="descr" id="dsc">Восемь значений: n<sub>1</sub>, n<sub>2</sub>, ..., n<sub>8</sub></span>
-
 		<div class="title_m hidden">1) Коэффициент распределения трафика</div>
 		<div class="hidden" id="n1">
 			<div class="eqs">
 				<img src="./img/kj.png" alt="kj">
 				<img src="./img/nsum.png" alt="nsum">
-
 			</div>
 			N<sub>a</sub> = 8<br> n
 			<sub>∑</sub> = <span id="nSum">0</span><br><br>
@@ -153,9 +158,7 @@
 					<td id="k8">0</td>
 				</tr>
 			</table>
-
 		</div>
-
 		<div class="title_m hidden">2) Интенсивность нагрузки в направлениях связи</div>
 		<div class="hidden" id="n2">
 			<div class="text">
@@ -192,15 +195,12 @@
 				<tr id="n2_6"> </tr>
 				<tr id="n2_7"> </tr>
 			</table>
-
 		</div>
-
 		<div class="title_m hidden">3) Модель сети</div>
 		<div class="hidden" id="n3">
 			<br><span class="descr">Граф представлен матрицей расстояний между вершинами</span>
 			<div class="eqs">
 				<img src="./img/n3m.png" alt="n3m">
-
 			</div>
 			<span class="descr">C
 			<sub>ij</sub> = 1 (Есть ребро) или <b>∞</b> (Ребра нет)</span> <br> <span class="descr">N = 12 (Все узлы связи)</span>
@@ -402,7 +402,6 @@
 				</tr>
 			</table>
 		</div>
-
 		<div class="title_m hidden">4) Нахождение кратчайших маршрутов</div>
 		<div class="hidden" id="n4">
 			<br><span class="descr">На основе матрицы <b>C</b> (из 3го пункта) построим матрицу кратчайших путей R.</span><br>
@@ -604,7 +603,6 @@
 				</tr>
 			</table>
 		</div>
-
 		<div class="title_m hidden">5) Распределение интенсивности нагрузки по маршрутам</div>
 		<div class="hidden" id="n5">
 			<br><span class="descr">На основании матрицы <b>Y</b> и матрицы <b>R</b>.</span>
@@ -808,7 +806,6 @@
 				</tr>
 			</table>
 		</div>
-
 		<div class="title_m hidden">6) Расчет числа потоков</div>
 		<div class="hidden" id="n6">
 			<br><span class="descr">На основании матрицы <b>Ÿ</b> и норме QoS (<b>0.02</b>).</span>
@@ -1019,7 +1016,6 @@
 				</tr>
 			</table>
 		</div>
-
 		<div class="title_m hidden">7) Расчет интенсивности трафика</div>
 		<div class="hidden" id="n7">
 			<br><span class="descr">На основании матрицы <b>V</b> и a<sub>0</sub> = <b>85.6 кбит/c</b>.</span>
@@ -1223,7 +1219,6 @@
 				</tr>
 			</table>
 		</div>
-
 		<div class="title_m hidden">8) Расчет пропускных способностей</div>
 		<div class="hidden" id="n8">
 			<br><span class="descr">На основании матрицы <b>A</b> и треб. задержки (<b>50мc</b>).</span>
@@ -1231,7 +1226,7 @@
 				<img src="./img/t0.png" alt="t0">
 			</div>
 			<span class="descr">T<sub>0</sub> = 50мс = 0.05с</span>
-			<br><br> b<sub>ij</sub> = <b>a<sub>ij</sub> + L/T<sub>0</sub></b> или <b>0</b> (Если ребра нет)
+			<br><br> b<sub>ij</sub> = <b>a<sub>ij</sub> + L/T<sub>0</sub></b> или <b>0</b> кбит/c (Если ребра нет)
 			<br><span class="descr">L = 200байт = 1,6кбит</span>
 			<br> B:
 			<table>
@@ -1432,9 +1427,7 @@
 				</tr>
 			</table>
 		</div>
-
 		<img class="no hidden" src="./img/mops.jpg" alt="mops">
-
 	</div>
 </body>
 
