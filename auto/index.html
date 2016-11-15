@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Automate</title>
+	<link rel="stylesheet" href="./css/normalize.css">
+	<link rel="stylesheet" href="./css/chartist.min.css">
+	<link rel="stylesheet" href="./css/range.css">
+	<link rel="stylesheet" href="./css/default.css">
+	<script src="./lib/chartist.js"></script>
+	<script src="bundle.js"></script>
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="container">
+			<div class="button active">M/M/V/K/N</div>
+			<div class="head">
+				<div class="images">
+					<div class="mask" id="imask"></div>
+					<img id="bd" class="halfOp" src="./images/5.png" alt="birth_death">
+					<img id="sc" class="halfOp" src="./images/5sc.png" alt="birth_death">
+				</div>
+			</div>
+			<div class="chart">
+				<div class="legend">
+					<div class="holder">
+						<span class="s1">&#9679;</span> P<sub>k</sub>
+					</div>
+					<div class="holder">
+						<span class="s2">&#9679;</span> P<sub>t</sub>
+					</div>
+					<div class="holder">
+						<span class="s3">&#9679;</span> P<sub>b</sub>
+					</div>
+				</div>
+				<div class="ct-chart"></div>
+			</div>
+			<div class="tail">
+				<div class="control">
+					<div class="holder">
+						<div class="label" id="l_a">α = <span id="v_a">0.3</span></div>
+						<input id="a" type="range" min="0" max="1" step="0.01">
+					</div>
+				</div>
+				<div class="control">
+					<div class="holder">
+						<div class="label" id="l_m">μ = <span id="v_m">5</span></div>
+						<input id="m" type="range" min="0" max="100" step="1">
+					</div>
+				</div>
+				<div class="control">
+					<div class="holder">
+						<div class="label" id="l_V">V = <span id="v_V">35</span></div>
+						<input id="V" type="range" min="0" max="100" step="1">
+					</div>
+				</div>
+				<div class="control">
+					<div class="holder">
+						<div class="label" id="l_N">N = <span id="v_N">50</span></div>
+						<input id="N" type="range" min="0" max="100" step="1">
+					</div>
+				</div>
+			</div>
+		</div>
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "target": "ES5",
+        "module": "system",
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outFile": "bundle.js"
+    },
+    "include": [
+        "src/**/*",
+        "lib/**/*"
+    ]
+}

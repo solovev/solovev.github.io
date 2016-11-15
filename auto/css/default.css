@@ -1,0 +1,264 @@
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "consolas";
+    background: #01aed9;
+    height: 100%;
+    width: 100%;
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background: #f4f6f5;
+    padding: 15px;
+    color: white;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+.head {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    background: #f4f6f5;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.ct-series-a .ct-line,
+.ct-series-a .ct-point,
+.ct-series-a .ct-slice-donut {
+    /*stroke: #0CC162;*/
+    stroke: #00a8e9;
+}
+
+.ct-series-b .ct-bar,
+.ct-series-b .ct-line,
+.ct-series-b .ct-point,
+.ct-series-b .ct-slice-donut {
+    stroke: #BBBBBB;
+}
+
+.ct-series-c .ct-bar,
+.ct-series-c .ct-line,
+.ct-series-c .ct-point,
+.ct-series-c .ct-slice-donut {
+    stroke: #0CC162;
+}
+
+.ct-series-a .ct-area {
+    fill: #00a8e9;
+}
+
+.chart {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background: #f4f6f5;
+    padding-top: 12px;
+}
+
+.chart .legend {
+    position: absolute;
+    width: 120px;
+    left: 666px;
+    top: 45px;
+    color: rgba(0, 0, 0, 0.87);
+    font-size: 1.1rem;
+}
+
+.chart .legend .holder {
+    width: 100%;
+    height: 27px;
+    line-height: 27px;
+    text-align: center;
+}
+
+.chart .legend .holder .s1 {
+    color: #00a8e9;
+}
+
+.chart .legend .holder .s2 {
+    color: #BBBBBB;
+}
+
+.chart .legend .holder .s3 {
+    color: #0CC162;
+}
+
+.tail {
+    width: 100%;
+    height: 150px;
+    background: #f4f6f5;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.tail .control {
+    width: 180px;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tail .control .holder {
+    width: 150px;
+}
+
+.tail .control .holder .label {
+    color: #7f898b;
+    text-align: center;
+}
+
+.button {
+    position: absolute;
+    width: 100px;
+    height: 35px;
+    top: 75px;
+    left: -60px;
+    font-size: 15px;
+    line-height: 35px;
+    text-align: center;
+    z-index: 999;
+}
+
+.active {
+    background: #00bdff;
+    border-radius: 1px;
+    border: 5px solid #f4f6f5;
+}
+
+.focus {
+    text-shadow: 1px 1px 1px #7f898b;
+}
+
+.warning {
+    color: red;
+    text-shadow: 1px 1px 1px red;
+}
+
+.off {
+    cursor: help;
+}
+
+.images {
+    position: relative;
+    width: 100%;
+    height: 95%;
+    background: white;
+    border-radius: 25px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.images .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    background: rgba(127, 137, 139, 0.09);
+    border-radius: 25px;
+}
+
+#bd {
+    width: 460px;
+}
+
+#sc {
+    align-self: center;
+    width: 200px;
+    height: 100px;
+}
+
+.halfOp {
+    opacity: 0.5;
+}
+
+.noOp {
+    opacity: 1.0;
+}
+
+.ct-legend {
+    position: relative;
+    z-index: 10;
+    list-style: none;
+    text-align: center;
+}
+
+.ct-legend li {
+    position: relative;
+    padding-left: 23px;
+    margin-right: 10px;
+    margin-bottom: 3px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.ct-legend li:before {
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    left: 0;
+    content: '';
+    border: 3px solid transparent;
+    border-radius: 2px;
+}
+
+.ct-legend li.inactive:before {
+    background: transparent;
+}
+
+.ct-legend.ct-legend-inside {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.ct-legend.ct-legend-inside li {
+    display: block;
+    margin: 0;
+}
+
+.ct-legend .ct-series-0:before {
+    background-color: #d70206;
+    border-color: #d70206;
+}
+
+.ct-legend .ct-series-1:before {
+    background-color: #f05b4f;
+    border-color: #f05b4f;
+}
+
+.ct-legend .ct-series-2:before {
+    background-color: #f4c63d;
+    border-color: #f4c63d;
+}
+
+.ct-legend .ct-series-3:before {
+    background-color: #d17905;
+    border-color: #d17905;
+}
+
+.ct-legend .ct-series-4:before {
+    background-color: #453d3f;
+    border-color: #453d3f;
+}
