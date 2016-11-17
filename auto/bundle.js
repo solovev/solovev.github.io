@@ -7,6 +7,7 @@ window.onload = function () {
     iA.value = 0.3 + '';
     iV.value = 35 + '';
     var head = document.getElementsByTagName('head')[0];
+    var dataG = [];
     updateChart();
     var es = document.createElement('style');
     es.innerHTML = "input:not([id=\"m\"])::-webkit-slider-thumb { box-shadow: -200px 0 0 200px #7f898b;}";
@@ -41,8 +42,13 @@ window.onload = function () {
         updateChart();
     };
     function updateChart() {
-        var data = calculateData(+iA.value, +iM.value, +iV.value, +iN.value);
-        setupChart(data);
+        dataG = calculateData(+iA.value, +iM.value, +iV.value, +iN.value);
+        setupChart(dataG);
+        document.getElementById('statT').innerText = dataG[1][0] + '';
+        document.getElementById('statB').innerText = dataG[2][0] + '';
+        document.getElementById('statK').innerText = dataG[0][0] + '';
+        document.getElementById('k').innerText = '0';
+        console.log(document.getElementsByClassName('ct-grid ct-horizontal').length);
     }
     document.getElementById('imask').onmouseover = function () {
         document.getElementById('sc').classList.remove('halfOp');
@@ -52,6 +58,43 @@ window.onload = function () {
         document.getElementById('sc').classList.add('halfOp');
         document.getElementById('bd').classList.add('halfOp');
     };
+    var millisecondsToWait = 500;
+    setTimeout(function () {
+        var grid = document.getElementsByClassName('ct-grids')[0];
+        var x = grid.getBoundingClientRect().left;
+        var y = grid.getBoundingClientRect().top;
+        var width = grid.getBoundingClientRect().width;
+        var height = grid.getBoundingClientRect().height;
+        var element = document.createElement('div');
+        element.style.position = 'absolute';
+        element.style.left = x + 'px';
+        element.style.top = y + 'px';
+        element.style.width = width + 'px';
+        element.style.height = height + 'px';
+        document.getElementsByClassName('ct-grid ct-horizontal')[0];
+        element.onmousemove = function (e) {
+            var lines = document.getElementsByClassName('ct-grid ct-horizontal');
+            var labels = document.getElementsByClassName('ct-label ct-horizontal ct-end');
+            for (var i = 0; i < lines.length; i++) {
+                lines[i].style.stroke = 'rgba(0, 0, 0, .2)';
+                lines[i].style.strokeWidth = '1px';
+                if (labels.length > 0)
+                    labels[i].style.color = 'rgba(0, 0, 0, .4)';
+            }
+            var nLines = lines.length - 1;
+            var step = width / nLines;
+            var currentX = e.offsetX;
+            var id = Math.round(currentX / step);
+            lines[id].style.stroke = '#00a8e9';
+            lines[id].style.strokeWidth = '2px';
+            if (labels.length > 0)
+                labels[id].style.color = '#000';
+            document.getElementById('k').innerText = id + '';
+            document.getElementById('statK').innerText = dataG[0][id] + '';
+        };
+        console.log(document.getElementsByClassName('ct-grid ct-horizontal').length);
+        document.body.appendChild(element);
+    }, millisecondsToWait);
 };
 function setupChart(data) {
     var labels = [];
@@ -78,23 +121,26 @@ function setupChart(data) {
     var options = {
         width: 800,
         height: 300,
-        showPoint: false,
+        showPoint: true,
         fullWidth: true,
         axisX: { showLabel: false },
         series: {
             's1': {
+                showPoint: true,
                 showArea: true
             },
             's2': {
+                showPoint: false,
                 showArea: false
             },
             's3': {
+                showPoint: false,
                 showArea: false
             }
         }
     };
     options.axisX.showLabel = data[0].length <= 50;
-    console.log(data.length);
+    options.series.s1.showPoint = data[0].length <= 50;
     if (chart == null) {
         chart = new Chartist.Line('.ct-chart', chartData, options);
     }

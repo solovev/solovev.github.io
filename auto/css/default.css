@@ -70,6 +70,23 @@ body {
     padding-top: 12px;
 }
 
+.chart .stats {
+    color: rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+#statK {
+    color: #00a8e9;
+}
+
+#statT {
+    color: #BBBBBB;
+}
+
+#statB {
+    color: #0CC162;
+}
+
 .chart .legend {
     position: absolute;
     width: 120px;
