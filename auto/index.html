@@ -15,7 +15,12 @@
 <body>
 	<div class="wrapper">
 		<div class="container">
-			<div class="button active">M/M/V/K/N</div>
+			<div id="b1" class="button button1">M/M/1</div>
+			<div id="b2" class="button button2">M/M/∞</div>
+			<div id="b3" class="button button3">M/M/V</div>
+			<div id="b4" class="button button4">M/M/V/K</div>
+			<div id="b5" class="button button5 active">M/M/V/K/N</div>
+			<div class="button-holder"></div>
 			<div class="head">
 				<div class="images">
 					<div class="mask" id="imask"></div>
@@ -24,46 +29,69 @@
 				</div>
 			</div>
 			<div class="chart">
-				<div class="stats">
-					P<sub id="k">k</sub> = <span id="statK">0</span>, P<sub>t</sub> = <span id="statT">0</span>, P<sub>b</sub> =
+				<div id="stats1" class="stats none">
+					P<sub id="k1">k</sub> = <span id="statK1" class="blue">0</span>, k<sub id="ksr1">ср</sub> =
+					<span id="statKsr1">0</span>, T<sub id="Tsr1">ср</sub> = <span id="statTsr1">0</span>
+				</div>
+				<div id="stats2" class="stats none">
+					P<sub id="k2">k</sub> = <span id="statK2" class="blue">0</span>, k<sub id="ksr2">ср</sub> =
+					<span id="statKsr2">0</span>, T<sub id="Tsr2">ср</sub> = <span id="statTsr2">0</span>
+				</div>
+				<div id="stats3" class="stats none">
+					P<sub id="k3">k</sub> =
+					<span id="statK3" class="blue">0</span>, P<sub>t</sub> = <span class="green" id="statT3">0</span>, Ϫ<sub>cp</sub> =
+					<span id="statS">0</span>, j<sub>cp</sub> =
+					<span id="statJ">0</span>
+				</div>
+				<div id="stats4" class="stats none">
+					P<sub id="k4">k</sub> = <span id="statK4" class="blue">0</span>, P<sub>t</sub> = P<sub>b</sub> = <span id="statT4">0</span>
+				</div>
+				<div id="stats5" class="stats">
+					P<sub id="k5">k</sub> = <span id="statK5" class="blue">0</span>, P<sub>t</sub> = <span id="statT">0</span>, P<sub>b</sub>					=
 					<span id="statB">0</span>
 				</div>
 				<div class="legend">
-					<div class="holder">
+					<div id="legendPk" class="holder">
 						<span class="s1">&#9679;</span> P<sub>k</sub>
 					</div>
-					<div class="holder">
+					<div id="legendPt" class="holder">
 						<span class="s2">&#9679;</span> P<sub>t</sub>
 					</div>
-					<div class="holder">
+					<div id="legendPb" class="holder">
 						<span class="s3">&#9679;</span> P<sub>b</sub>
 					</div>
 				</div>
 				<div class="ct-chart"></div>
 			</div>
 			<div class="tail">
-				<div class="control">
+				<div id="controlA" class="control">
 					<div class="holder">
 						<div class="label" id="l_a">α = <span id="v_a">0.3</span></div>
-						<input id="a" type="range" min="0" max="1" step="0.01">
+						<input id="a" type="range" min="0.01" max="0.99" step="0.01">
 					</div>
 				</div>
-				<div class="control">
+				<div id="controlM" class="control">
 					<div class="holder">
 						<div class="label" id="l_m">μ = <span id="v_m">5</span></div>
 						<input id="m" type="range" min="0" max="100" step="1">
 					</div>
 				</div>
-				<div class="control">
+				<div id="controlV" class="control">
 					<div class="holder">
 						<div class="label" id="l_V">V = <span id="v_V">35</span></div>
 						<input id="V" type="range" min="0" max="100" step="1">
 					</div>
 				</div>
-				<div class="control">
+				<div id="controlN" class="control">
 					<div class="holder">
 						<div class="label" id="l_N">N = <span id="v_N">50</span></div>
 						<input id="N" type="range" min="0" max="100" step="1">
+					</div>
+				</div>
+				<div id="controlY" class="none control">
+					<div class="holder">
+						<div class="label" id="l_Y">λ = <span id="v_Y">1</span></div>
+						<input id="Y" type="range" min="1" max="100" step="1">
 					</div>
 				</div>
 			</div>
