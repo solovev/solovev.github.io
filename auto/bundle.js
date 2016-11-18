@@ -93,7 +93,7 @@ function setModel() {
             iM.min = '1.0';
             break;
         case 5:
-            document.getElementById('controlY').classList.remove('none');
+            document.getElementById('controlN').classList.remove('none');
             document.getElementById('controlM').classList.remove('none');
             document.getElementById('controlV').classList.remove('none');
             document.getElementById('controlA').classList.remove('none');
