@@ -1,0 +1,22 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="199px" height="35px" version="1.1">
+    <defs/>
+    <g stroke="#777" transform="translate(0.5,0.5)">
+        <path d="M 158 16 L 177.76 16" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 185.76 16 L 177.76 18.67 L 177.76 13.33 Z" fill="#444" stroke-width="2" stroke-miterlimit="10" pointer-events="none"
+        />
+        <ellipse cx="133" cy="16" rx="15" ry="15" fill="none" stroke-width="2" pointer-events="none" />
+        <path d="M 122.29 26.71 L 143.71 5.29" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 122.29 5.29 L 143.71 26.71" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 8 16 L 27.76 16" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 35.76 16 L 27.76 18.67 L 27.76 13.33 Z" fill="#444" stroke-width="2" stroke-miterlimit="10" pointer-events="none"
+        />
+        <rect x="55" y="1" width="9" height="30" fill="none" stroke-width="2" pointer-events="none" />
+        <rect x="46" y="1" width="9" height="30" fill="none" stroke-width="2" pointer-events="none" />
+        <rect x="73" y="1" width="9" height="30" fill="none" stroke-width="2" pointer-events="none" />
+        <path d="M 88 16 L 102.76 16" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 110.76 16 L 102.76 18.67 L 102.76 13.33 Z" fill="#444" stroke-width="2" stroke-miterlimit="10" pointer-events="none"
+        />
+        <rect x="64" y="1" width="9" height="30" fill="none" stroke-width="2" pointer-events="none" />
+    </g>
+</svg>

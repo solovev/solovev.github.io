@@ -1,0 +1,28 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="219px" height="62px" version="1.1">
+    <defs/>
+    <g fill="#444" stroke="#444" transform="translate(0.5,0.5)">
+        <rect x="48" y="1" width="120" height="40" rx="6" ry="6" fill="none" stroke-width="2" pointer-events="none" />
+        <path d="M 178 21 L 197.76 21" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 205.76 21 L 197.76 23.67 L 197.76 18.33 Z" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <ellipse cx="68" cy="21" rx="10" ry="10" fill="none" stroke-width="2" pointer-events="none" />
+        <path d="M 60.86 28.14 L 75.14 13.86" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 60.86 13.86 L 75.14 28.14" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <ellipse cx="98" cy="21" rx="10" ry="10" fill="none" stroke-width="2" pointer-events="none" />
+        <path d="M 90.86 28.14 L 105.14 13.86" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 90.86 13.86 L 105.14 28.14" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <ellipse cx="148" cy="21" rx="10" ry="10" fill="none" stroke-width="2" pointer-events="none" />
+        <path d="M 140.86 28.14 L 155.14 13.86" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 140.86 13.86 L 155.14 28.14" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <ellipse cx="116" cy="27" rx="1" ry="1" stroke-width="2" pointer-events="none" />
+        <ellipse cx="123" cy="27" rx="1" ry="1" stroke-width="2" pointer-events="none" />
+        <ellipse cx="130" cy="27" rx="1" ry="1" stroke-width="2" pointer-events="none" />
+        <path d="M 37.91 26.09 L 27.91 26.09 Q 17.91 26.09 17.91 33.42 L 17.91 40.74" fill="none" stroke-width="2" stroke-miterlimit="10"
+            pointer-events="none" />
+        <path d="M 17.91 48.74 L 15.24 40.74 L 20.57 40.74 Z" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 8 21 L 27.76 21" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 35.76 21 L 27.76 17 L 27.76 21 Z" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 8 21 L 27.76 21" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 35.76 21 L 27.76 17 L 27.76 21 Z" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+    </g>
+</svg>

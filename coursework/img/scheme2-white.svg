@@ -1,0 +1,26 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="219px" height="44px" version="1.1">
+    <defs/>
+    <g stroke="#777" fill="#777" transform="translate(0.5,0.5)">
+        <rect x="108" y="1" width="60" height="40" rx="6" ry="6" fill="none" stroke-width="2" pointer-events="none" />
+        <path d="M 178 21 L 197.76 21" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 205.76 21 L 197.76 23.67 L 197.76 18.33 Z" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <ellipse cx="122" cy="22" rx="7.5" ry="7.5" fill="none" stroke-width="2" pointer-events="none" />
+        <path d="M 116.14 26.86 L 126.86 16.14" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 116.14 16.14 L 126.86 26.86" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <ellipse cx="143" cy="22" rx="7.5" ry="7.5" fill="none" stroke-width="2" pointer-events="none" />
+        <path d="M 137.14 26.86 L 147.86 16.14" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 137.14 16.14 L 147.86 26.86" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <ellipse cx="155" cy="26" rx="1" ry="1" stroke="none" pointer-events="none" />
+        <ellipse cx="158" cy="26" rx="1" ry="1" stroke="none" pointer-events="none" />
+        <ellipse cx="161" cy="26" rx="1" ry="1" stroke="none" pointer-events="none" />
+        <path d="M 0 21 L 17.76 21" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 25.76 21 L 17.76 23.67 L 17.76 18.33 Z" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <rect x="45" y="6" width="9" height="30" fill="none" stroke-width="2" pointer-events="none" />
+        <rect x="36" y="6" width="9" height="30" fill="none" stroke-width="2" pointer-events="none" />
+        <rect x="63" y="6" width="9" height="30" fill="none" stroke-width="2" pointer-events="none" />
+        <path d="M 78 21 L 92.76 21" fill="none" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <path d="M 100.76 21 L 92.76 23.67 L 92.76 18.33 Z" stroke-width="2" stroke-miterlimit="10" pointer-events="none" />
+        <rect x="54" y="6" width="9" height="30" fill="none" stroke-width="2" pointer-events="none" />
+    </g>
+</svg>

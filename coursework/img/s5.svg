@@ -1,0 +1,25 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="159px" height="84px" version="1.1">
+    <defs/>
+    <g transform="translate(0.5,0.5)">
+        <g fill="#444" stroke="#444" stroke-width="2" stroke-miterlimit="10">
+            <path d="M 8 41 L 37.76 41" fill="none" />
+            <path d="M 45.76 41 L 37.76 43.67 L 37.76 38.33 Z" />
+            <rect x="58" y="1" width="40" height="80" rx="6" ry="6" fill="none" />
+            <path d="M 108 41 L 137.76 41" fill="none" />
+            <path d="M 145.76 41 L 137.76 43.67 L 137.76 38.33 Z" />
+            <ellipse cx="71" cy="13" rx="8" ry="8" fill="none" />
+            <path d="M 65.32 7.32 L 76.68 18.68" fill="none" />
+            <path d="M 76.68 7.32 L 65.32 18.68" fill="none" />
+            <ellipse cx="71" cy="33" rx="8" ry="8" fill="none" />
+            <path d="M 65.32 27.32 L 76.68 38.68" fill="none" />
+            <path d="M 76.68 27.32 L 65.32 38.68" fill="none" />
+            <ellipse cx="71" cy="69" rx="8" ry="8" fill="none" />
+            <path d="M 65.32 63.32 L 76.68 74.68" fill="none" />
+            <path d="M 76.68 63.32 L 65.32 74.68" fill="none" />
+            <ellipse cx="71" cy="47" rx="1" ry="1" />
+            <ellipse cx="71" cy="51" rx="1" ry="1" />
+            <ellipse cx="71" cy="55" rx="1" ry="1" />
+        </g>
+    </g>
+</svg>
