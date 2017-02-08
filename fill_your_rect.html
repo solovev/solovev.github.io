@@ -1,62 +1,261 @@
-﻿<html>
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<style>
- 			* { margin: 0; overflow: hidden;}
-		</style>
-	</head>
+<html>
+
+<head>
+    <style>
+        div {
+            display: flex;
+            justify-content: space-between;
+            width: 1000;
+            margin: 200px auto;
+        }
+
+        svg {
+            flex: 1 0 auto;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            background-color: #f1f1f1;
+            max-width: 192px;
+        }
+
+        span {
+
+        }
+    </style>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+</head>
+
 <body>
-	<center>
-	<canvas id="c"></canvas>
-	</center>
-	<script>
-		var canvas = document.getElementById('c');
-		var ctx = canvas.getContext('2d');
-			ctx.fillStyle = "black";
 
-		var width = canvas.width = document.documentElement.clientWidth;
-		var height = canvas.height = document.documentElement.clientHeight;
+    <div>
+        <svg width="192" height="212">
+            <rect x="10" y="5" width="19" height="8" fill="rgba(38, 194, 129, 0.31)"/>
+            <circle cx="180" cy="9" r="5" fill="rgba(38, 194, 129, 0.31)"/>
+            <rect x="80" y="6.5" width="65" height="5" fill="transparent" stroke="rgba(0, 0, 0, 0.11)" stroke-width="0.6"/>
+            <rect x="0" y="18" width="192" height="10" fill="rgba(38, 194, 129, 0.31)" />
+            <rect x="0" y="28" width="192" height="45" fill="rgba(38, 194, 129, 0.41)" />
+            <g fill="rgba(255, 255, 255, 0.8)">
+                <rect x="22" y="22" width="10" height="2" />
+                <rect x="37" y="22" width="10" height="2" />
+                <rect x="52" y="22" width="10" height="2" />
+                <rect x="67" y="22" width="10" height="2" />
+                <rect x="82" y="22" width="10" height="2" />
+                <rect x="97" y="22" width="10" height="2" />
+                <rect x="112" y="22" width="10" height="2" />
+                <rect x="127" y="22" width="10" height="2" />
+                <rect x="142" y="22" width="10" height="2" />
+                <rect x="157" y="22" width="10" height="2" />
+            </g>
+            <g fill="rgba(255, 255, 255, 0.9)">
+                <polygon points="30,32 15,55 30,68 45,55" />
+                <rect x="90" y="40" width="35" height="6" />
+                <rect x="90" y="50" width="50" height="1" />
+                <rect x="90" y="52" width="45" height="1" />
+                <rect x="90" y="54" width="41" height="1" />
+            </g>
+            <rect x="90" y="58" width="25" height="5" fill="rgba(255,255, 255, 0.4)" stroke="rgba(255,255, 255, 0.9)" stroke-width="0.6"/>
+            <defs>
+                <symbol id="showcase-item">
+                    <circle cx="36" cy="85" r="8" fill="rgba(0, 0, 0, 0.31)" />
+                    <rect x="47" y="80" width="12" height="3" fill="rgba(0, 0, 0, 0.16)" />
+                    <rect x="47" y="84" width="8" height="2" fill="rgba(0, 0, 0, 0.16)" />
+                    <rect x="47" y="88" width="10" height="4" fill="rgba(38, 194, 129, 0.41)" />
+                </symbol>
+                <symbol id="product">
+                    <rect x="36" y="122" width="30" height="30" fill="transparent" stroke="rgba(0,0, 0, 0.11)" stroke-width="0.3" />
+                    <circle cx="51" cy="132" r="6" fill="rgba(0, 0, 0, 0.21)" />
+                    <rect x="45" y="140" width="12" height="2" fill="rgba(0, 0, 0, 0.16)" />
+                    <rect x="43" y="144" width="6" height="3" fill="rgba(0, 0, 0, 0.16)" />
+                    <rect x="51" y="144" width="8" height="3" fill="rgba(38, 194, 129, 0.41)" />
+                    <rect x="36" y="152" width="30" height="1" fill="rgba(38, 194, 129, 0.41)" />
+                </symbol>
+            </defs>
+            <use xlink:href="#showcase-item" x="-5" y="2"/>
+            <use xlink:href="#showcase-item" x="35" y="2"/>
+            <use xlink:href="#showcase-item" x="75" y="2"/>
+            <use xlink:href="#showcase-item" x="115" y="2"/>
+            <rect x="0" y="100" width="192" height="14" fill="rgba(38, 194, 129, 0.31)" />
+            <rect x="15" y="105" width="24" height="4" fill="rgba(255, 255, 255, 0.8)" />
 
-		var count = 500; // prompt("Enter number of object: ");
+            <use xlink:href="#product" x="0" y="0"/>
+            <use xlink:href="#product" x="45" y="0"/>
+            <use xlink:href="#product" x="90" y="0"/>
+            <use xlink:href="#product" x="0" y="35"/>
+            <use xlink:href="#product" x="45" y="35"/>
+            <use xlink:href="#product" x="90" y="35"/>
 
-		var offsetAngle = 360 / count;
-		var radian = Math.PI / 180;
+            <rect x="0" y="198" width="192" height="14" fill="rgba(38, 194, 129, 0.41)" />
+            <rect x="36" y="210" width="120" height="2" fill="rgba(255, 255, 255, 0.8)" />
+            <rect x="71" y="204" width="50" height="2" fill="rgba(255, 255, 255, 0.8)" />
+        </svg>
+        <svg width="192" height="212">
+            <rect x="0" y="15" width="192" height="1" fill="rgba(0, 0, 0, 0.11)" />
 
-		var size = 30;
+            <g fill="rgba(0, 0, 0, 0.11)">
+                <rect x="29" y="6" width="14" height="3" />
+                <rect x="49" y="6" width="14" height="3" />
+                <rect x="69" y="6" width="14" height="3" />
+                <rect x="109" y="6" width="14" height="3" />
+                <rect x="129" y="6" width="14" height="3" />
+                <rect x="149" y="6" width="14" height="3" />
+            </g>
 
-		var attachLeft = width - size;
-		var attachBottom = height - size;
+            <polygon points="83,0 109,0 96,22" fill="#bbecd8"/>
+            <g fill="rgba(255, 255, 255, 0.81)">
+                <rect x="90" y="5" width="12" height="2" />
+                <rect x="92" y="8" width="8" height="1" />
+            </g>
 
+            <g stroke="#bbecd8" stroke-width="0.7" fill="white">
+                <rect x="64" y="46" width="12" height="3" />
+                <rect x="80" y="46" width="14" height="3" />
+                <rect x="98" y="46" width="14" height="3" />
+                <rect x="116" y="46" width="12" height="3" />
+            </g>
+            <rect x="83" y="28" width="27" height="7" stroke="#bbecd8" stroke-width="1" fill="white" />
+            <rect x="85" y="30" width="23" height="3" fill="rgba(0, 0, 0, 0.06)"/>
 
-		var timerId = setInterval(doIt, 10)
-		var rW = 0, rH = 0;
+            <defs>
+                <symbol id="row">
+                    <g fill="rgba(38, 194, 129, 0.31)">
+                        <rect x="34.5" y="0" width="30" height="30" />
+                        <rect x="65.5" y="0" width="30" height="30" />
+                        <rect x="96.5" y="0" width="30" height="30" />
+                        <rect x="127.5" y="0" width="30" height="30" />
+                    </g>
+                </symbol>
+            </defs>
+            <use xlink:href="#row" x="0" y="57"/>
+            <use xlink:href="#row" x="0" y="88"/>
 
-		var rects = {};
+            <rect x="34.5" y="125" width="41" height="25" fill="rgba(38, 194, 129, 0.31)" />
+            <rect x="75.5" y="125" width="20" height="25" fill="rgba(0, 0, 0, 0.16)" />
+            <g fill="rgba(255, 255, 255, 0.8)">
+                <rect x="78" y="130" width="15" height="2" />
+                <rect x="78" y="134" width="10" height="2" />
+            </g>
+            <rect x="78" y="143" width="15" height="4" fill="transparent" stroke="rgba(255, 255, 255, 0.8)" stroke-width="0.6" />
+            <rect x="100" y="128" width="41" height="2" fill="rgba(0, 0, 0, 0.2)" />
+            <g fill="rgba(0, 0, 0, 0.11)">
+                <rect x="100" y="135" width="57" height="1"  />
+                <rect x="100" y="138" width="51" height="1"  />
+                <rect x="100" y="141" width="55" height="1" />
+            </g>
+            <rect x="120" y="155" width="41" height="25" fill="rgba(38, 194, 129, 0.31)" />
+            <rect x="100" y="155" width="20" height="25" fill="rgba(0, 0, 0, 0.16)" />
+            <g fill="rgba(255, 255, 255, 0.8)">
+                <rect x="102.5" y="160" width="15" height="2" />
+                <rect x="102.5" y="164" width="10" height="2" />
+            </g>
+            <rect x="102.5" y="173" width="15" height="4" fill="transparent" stroke="rgba(255, 255, 255, 0.8)" stroke-width="0.6" />
+            <rect x="34.5" y="157" width="41" height="2" fill="rgba(0, 0, 0, 0.2)" />
+            <g fill="rgba(0, 0, 0, 0.11)">
+                <rect x="34.5" y="164" width="57" height="1" />
+                <rect x="34.5" y="167" width="51" height="1" />
+                <rect x="34.5" y="170" width="55" height="1" />
+            </g>
+            <rect x="0" y="195" width="192" height="17" fill="rgba(0, 0, 0, 0.2)" />
+            <polygon points="96,192 90,195 102,195" fill="rgba(0, 0, 0, 0.2)" />
+            <rect x="83" y="199" width="26" height="2" fill="rgba(255, 255, 255, 0.8)" />
+            <circle cx="96" cy="206" r="3" fill="rgba(255, 255, 255, 0.3)" />
+        </svg>
+        <svg width="192" height="212">
+            <rect x="15" y="8" width="27" height="7" fill="rgba(38, 194, 129, 0.31)" />
 
-		function doIt() {
-			ctx.clearRect(0, 0, width, height);
+            <rect x="100" y="9" width="17" rx="5" ry="5" height="5" fill="rgba(0, 0, 0, 0.14)" />
+            <rect x="119" y="9" width="17" rx="5" ry="5" height="5" fill="rgba(0, 0, 0, 0.14)" />
+            <rect x="138" y="9" width="17" rx="5" ry="5" height="5" fill="rgba(0, 0, 0, 0.14)" />
+            <rect x="157" y="9" width="17" rx="5" ry="5" height="5" fill="rgba(0, 0, 0, 0.14)" />
 
-			for (var i = 0; i < count; i++) {
+            <rect x="0" y="20" width="192" height="58" fill="rgba(38, 194, 129, 0.31)" />
+            <rect width="60" height="6" x="66" y="37" fill="rgba(255, 255, 255, 0.87)"/>
+            <rect width="56" height="4" x="68" y="46" fill="rgba(255, 255, 255, 0.62)"/>
+            <rect width="24" height="6" x="84" y="60" rx="5" ry="5" fill="rgba(0, 120, 120, 0.22)"/>
 
-				var angle = (offsetAngle * i) * radian;
-				var x = Math.sin(angle) * rW * Math.cos(angle * 10);
-				var y = Math.cos(angle) * rH * Math.sin(angle);
+            <rect width="58" height="6" x="66" y="90" fill="rgba(0, 0, 0, 0.22)"/>
+            <rect width="100" height="2" x="46" y="98" fill="rgba(0, 0, 0, 0.12)"/>
 
-				x;
-				y += height / 2;
+            <g fill="rgba(0, 0, 0, 0.16)">
+                <circle cx="52" cy="120" r="6"/>
+                <circle cx="96" cy="120" r="6"/>
+                <circle cx="140" cy="120" r="6"/>
+            </g>
 
+            <g fill="rgba(0, 0, 0, 0.14)">
+                <rect width="30" height="1" x="37" y="128"/>
+                <rect width="30" height="1" x="37" y="131"/>
+                <rect width="26" height="1" x="39" y="134"/>
 
-				ctx.fillRect(x, y, size, size);
-			}
+                <rect width="30" height="1" x="81" y="128"/>
+                <rect width="30" height="1" x="81" y="131"/>
+                <rect width="26" height="1" x="83" y="134"/>
 
-			for (var i in rects)
-				ctx.fillRect(rects[i].x, rects[i].y, size, size);
+                <rect width="30" height="1" x="125" y="128"/>
+                <rect width="30" height="1" x="125" y="131"/>
+                <rect width="26" height="1" x="127" y="134"/>
+            </g>
+            <rect x="80" y="150" width="32" height="7" rx="5" ry="5" fill="rgba(38, 194, 129, 0.31)" />
 
-			rW += 1;
-			rH += 1;
-		}
+            <rect x="0" y="170" width="192" height="42" fill="rgba(38, 194, 129, 0.30)" />
+            <rect width="74" height="5" x="59" y="180" fill="rgba(255, 255, 255, 0.67)"/>
+            <rect width="94" height="2" x="48" y="189" fill="rgba(255, 255, 255, 0.62)"/>
+            <g fill="rgba(255, 255, 255, 0.67)">
+                <rect width="124" height="1" x="34" y="200"/>
+                <rect width="124" height="1" x="34" y="203"/>
+                <rect width="120" height="1" x="36" y="206"/>
+            </g>
+        </svg>
+        <svg width="192" height="212">
+            <g fill="rgba(38, 194, 129, 0.31)">
+                <rect x="15" y="8" width="5" height="4" />
+                <circle cx="25" cy="10" r="4" />
+                <rect x="30" y="8" width="10" height="4" />
+            </g>
 
-	</script>
+            <g fill="rgba(0, 0, 0, 0.14)">
+                <rect x="81" y="9" width="15" height="2" />
+                <rect x="100" y="9" width="15" height="2" />
+                <rect x="119" y="9" width="15" height="2" />
+                <rect x="138" y="9" width="15" height="2" />
+                <rect x="157" y="9" width="15" height="2" />
+            </g>
 
+            <rect x="0" y="20" width="192" height="38" fill="rgba(0, 0, 0, 0.11)" />
+            <g fill="rgba(0, 0, 0, 0.11)">
+                <rect x="61" y="32" width="15" height="4" />
+                <rect x="78" y="32" width="25" height="4" />
+            </g>
+            <g fill="rgba(0, 0, 0, 0.10)">
+                <rect x="61" y="38" width="45" height="2" />
+                <rect x="61" y="42" width="10" height="1" />
+                <circle cx="121" cy="38" r="11" />
+            </g>
+            <rect x="0" y="58" width="192" height="154" fill="rgba(0, 0, 0, 0.04)" />
+            <rect x="29" y="53" width="134" height="159" fill="white"/>
+            <defs>
+                <symbol id="post-wide">
+                    <circle cx="49" cy="74" r="4" fill="rgba(0, 0, 0, 0.13)" />
+                    <rect x="56" y="71" width="6" height="2" fill="rgba(38, 194, 129, 0.31)" />
+                    <rect x="63" y="71" width="2" height="2" fill="rgba(0, 0, 0, 0.13)" />
+                    <rect x="66" y="71" width="10" height="2" fill="rgba(38, 194, 129, 0.31)" />
+                    <rect x="56" y="74" width="15" height="2" fill="rgba(0, 0, 0, 0.13)" />
+                    <rect x="60" y="83" width="29" height="3" fill="rgba(0, 0, 0, 0.18)" />
+                    <rect x="60" y="113" width="72" height="1" fill="rgba(0, 0, 0, 0.13)" />
+                    <rect x="60" y="116" width="72" height="1" fill="rgba(0, 0, 0, 0.13)" />
+                    <rect x="60" y="119" width="72" height="1" fill="rgba(0, 0, 0, 0.13)" />
+                    <rect x="60" y="122" width="56" height="1" fill="rgba(0, 0, 0, 0.13)" />
+                    <rect x="127" y="130" width="8" height="1" fill="rgba(0, 0, 0, 0.18)" />
+                </symbol>
+            </defs>
+
+            <use xlink:href="#post-wide" x="0" y="-12"/>
+            <use xlink:href="#post-wide" x="0" y="62"/>
+            <use xlink:href="#post-wide" x="0" y="136"/>
+
+            <rect x="60" y="77" width="72" height="21" fill="rgba(38, 194, 129, 0.31)" />
+            <rect x="60" y="151" width="72" height="21" fill="rgba(0, 0, 0, 0.16)" />
+        </svg>
+    </div>
 </body>
+
 </html>
