@@ -1,0 +1,32 @@
+{
+  "name": "SoAI",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "d3": "3.5.17",
+    "function-plot": "^1.18.1",
+    "lodash.throttle": "^4.1.1",
+    "mathjs": "^4.0.0",
+    "synaptic": "^1.1.4",
+    "vue": "^2.5.13"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.0-alpha.13",
+    "@vue/cli-plugin-typescript": "^3.0.0-alpha.13",
+    "@vue/cli-service": "^3.0.0-alpha.13",
+    "lodash": "^4.17.5",
+    "node-sass": "^4.7.2",
+    "sass-loader": "^6.0.6",
+    "vue-template-compiler": "^2.5.13"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}

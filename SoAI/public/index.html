@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="shortcut icon" href="<%= webpackConfig.output.publicPath %>favicon.ico">
+    <title>SoAI</title>
+    <script type="text/javascript" src="/d3.min.js"></script>
+    <script>
+      window.process = {}
+      window.process.browser = true
+    </script>
+    <style>
+      body {
+        --text-color: #fff;
+        --main-color: #2c3e50;
+        --primary-color: #ff6b81;
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+        background-color: transparent;
+      }
+      /* Add a thumb */
+      ::-webkit-scrollbar-thumb {
+        width: 100%;
+        background-color: var(--primary-color);
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>
