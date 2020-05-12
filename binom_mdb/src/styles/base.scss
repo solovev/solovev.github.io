@@ -1,0 +1,87 @@
+@import "flex";
+@import "normalize";
+
+@include normalize();
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background-color: $page-background-color;
+  overflow-y: scroll;
+}
+
+body::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: $primary-color;
+}
+
+.tile {
+  @include default-shadow();
+  background-color: $tile-background-color;
+  padding: $base-offset;
+  border-radius: $block-radius;
+  min-width: $min-tile-width;
+  
+  @media (min-width: 748px) {
+    max-width: $max-tile-width;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 1280px) {
+    width: $max-tile-width;
+  }
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.clickable {
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+
+  &:hover > svg {
+    fill: $primary-color;
+  }
+}
+
+svg {
+  fill: $faded-text-color;
+}
+
+input {
+  outline: none;
+  border: none;
+  padding: 0;
+
+  &::placeholder {
+    color: $faded-text-color;
+  }
+}
+
+.interline { 
+  color: $faded-text-color;
+  font-size: 14px;
+}
+
+.no-default-a {
+  outline: none;
+  color: inherit;
+  text-decoration: none !important;
+}
+
+.no-default-a:hover {
+  color: inherit;
+}

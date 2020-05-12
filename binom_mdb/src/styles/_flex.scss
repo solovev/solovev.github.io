@@ -1,0 +1,44 @@
+.item-shrink {
+  flex-shrink: 1 !important;
+  min-width: 0;
+}
+
+.item-stretch {
+  flex-grow: 1;
+}
+
+.item-solid {
+  flex-shrink: 0 !important;
+}
+
+.snuggle-right {
+  margin-left: auto !important;
+}
+
+.snuggle-bottom {
+  margin-top: auto !important;
+}
+
+.column {
+  display: flex !important;
+  flex-direction: column;
+
+  &--center {
+    align-items: center;
+    justify-content: center;
+  }
+
+  &--solid {
+    flex: 1;
+    overflow: hidden;
+  }
+}
+
+.row {
+  display: flex !important;
+  align-items: center;
+
+  &--center {
+    justify-content: center;
+  }
+}
