@@ -139,10 +139,11 @@ export default {
       const { fn, range, size, nSamples, radius } = this
 
       return {
-          fn,
+          points: [[0.3,0.076671],[1.2,0.30594],[2.1,0.37779],[3,0.3382],[4.2,0.26667],[4.5,0.29235],[4.8,0.32621],[5.7,0.46489],[6.9,0.68259],[7.8,0.8018],[8.1,0.7826],[9,0.72308],[12,0.51835],[15,0.42462]],
           range,
           color: 'var(--primary-color)',
           graphType: 'scatter',
+          fnType: "points",
           attr: { r: radius, fill: 'var(--primary-color)' },
           nSamples
       }

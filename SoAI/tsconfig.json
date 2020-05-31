@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2015",
     "module": "es2015",
-    "strict": true,
+    "strict": false,
     "jsx": "preserve",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
@@ -10,6 +10,7 @@
     "baseUrl": ".",
     "noImplicitAny": false,
     "allowJs": true,
+    "strictPropertyInitialization": false,
     "types": [
       "node",
     ],

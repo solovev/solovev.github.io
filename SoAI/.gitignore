@@ -1,0 +1,13 @@
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+*.p12
+node_modules/
+dist/
+npm-debug.log
+test/unit/coverage
+test/e2e/reports
+selenium-debug.log
+.vscode/
+test/screenshots/
+.awcache/
