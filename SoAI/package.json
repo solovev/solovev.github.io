@@ -19,7 +19,7 @@
     "@vue/cli-plugin-babel": "^3.0.0-alpha.13",
     "@vue/cli-plugin-typescript": "^3.0.0-alpha.13",
     "@vue/cli-service": "^3.0.0-alpha.13",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.13",
     "node-sass": "^4.10.0",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.5.13"
