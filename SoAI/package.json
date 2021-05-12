@@ -11,7 +11,7 @@
     "d3": "3.5.17",
     "function-plot": "^1.18.1",
     "lodash.throttle": "^4.1.1",
-    "mathjs": "^4.0.0",
+    "mathjs": "^7.5.1",
     "synaptic": "^1.1.4",
     "vue": "^2.5.13"
   },
